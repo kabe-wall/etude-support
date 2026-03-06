@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etude - Privacy Policy</title>
+  <style>
+    :root {
+      --purple: #8746FF;
+      --bg: #0f0f14;
+      --surface: #1a1a24;
+      --text: #e8e8ed;
+      --text-secondary: #7a7a8c;
+      --border: #2a2a38;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+    nav {
+      position: sticky; top: 0;
+      background: rgba(15,15,20,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); z-index: 100;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    nav .logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+    nav .logo span { color: var(--purple); }
+    nav a.back { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+    nav a.back:hover { color: var(--text); }
+    .lang-toggle {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+      padding: 4px 10px; color: var(--text-secondary); font-size: 13px; cursor: pointer;
+    }
+    .lang-toggle:hover { border-color: var(--purple); color: var(--text); }
+    article { padding: 60px 0 80px; }
+    h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .effective { color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; }
+    .intro { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
+    h2 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+    p { color: var(--text-secondary); font-size: 15px; margin-bottom: 12px; }
+    p strong { color: var(--text); }
+    ul { color: var(--text-secondary); font-size: 15px; margin: 0 0 12px 24px; }
+    li { margin-bottom: 6px; }
+    li strong { color: var(--text); }
+    a { color: var(--purple); }
+    footer {
+      border-top: 1px solid var(--border); padding: 32px 0;
+      text-align: center; color: var(--text-secondary); font-size: 13px;
+    }
+    [data-lang="ja"] { display: none; }
+    body.ja [data-lang="ja"] { display: block; }
+    body.ja [data-lang="en"] { display: none; }
+    @media (max-width: 600px) { h1 { font-size: 24px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="index.html" class="logo"><span>Etude</span> Support</a>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <a href="index.html" class="back" data-lang="en">&larr; Back</a>
+      <a href="index.html" class="back" data-lang="ja">&larr; 戻る</a>
+      <button class="lang-toggle" onclick="toggleLang()">
+        <span data-lang="en">日本語</span>
+        <span data-lang="ja">English</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- EN -->
+<article data-lang="en">
+  <div class="container">
+    <h1>Privacy Policy</h1>
+    <p class="effective">Effective: February 6, 2026</p>
+    <p class="intro">Etude ("we", "our", or "the app") is a music practice application. We are committed to protecting your privacy. This policy explains how Etude handles your information.</p>
+
+    <h2>1. Data We Collect</h2>
+    <p>Etude is designed to work entirely offline. No account registration is required to use the app.</p>
+    <p><strong>We do not collect any personal data.</strong></p>
+
+    <h2>2. Local Storage</h2>
+    <p>Etude stores your preferences and settings locally on your device using standard system storage (UserDefaults / AsyncStorage). This data never leaves your device and includes:</p>
+    <ul>
+      <li>App settings (theme, playback preferences, layout options)</li>
+      <li>Score metadata (titles, last opened dates)</li>
+      <li>In-app purchase status</li>
+    </ul>
+
+    <h2>3. Music Files</h2>
+    <p>Music files you import (MusicXML, MSCZ, MIDI, MP3, WAV) are stored locally on your device. We do not access, upload, or share your music files.</p>
+
+    <h2>4. Network Communication</h2>
+    <p>Etude may connect to the internet only for the following purposes:</p>
+    <ul>
+      <li><strong>SoundFont downloads</strong>: Downloading instrument sound data from a CDN for MIDI playback</li>
+      <li><strong>In-app purchases</strong>: Processing purchases through Apple's App Store</li>
+    </ul>
+    <p>No personal data is transmitted during these connections.</p>
+
+    <h2>5. Third-Party Services</h2>
+    <p>We do not use any third-party analytics, advertising, or tracking services. We do not integrate any SDKs that collect user data.</p>
+
+    <h2>6. Children's Privacy</h2>
+    <p>Etude does not collect personal information from anyone, including children under 13.</p>
+
+    <h2>7. Changes to This Policy</h2>
+    <p>We may update this privacy policy from time to time. Any changes will be posted on this page with an updated effective date.</p>
+
+    <h2>8. Contact Us</h2>
+    <p>If you have questions about this privacy policy, please contact us at: <a href="mailto:wall.ao.dev@gmail.com">wall.ao.dev@gmail.com</a></p>
+  </div>
+</article>
+
+<!-- JA -->
+<article data-lang="ja">
+  <div class="container">
+    <h1>プライバシーポリシー</h1>
+    <p class="effective">施行日: 2026年2月6日</p>
+    <p class="intro">Etude（以下「当アプリ」）は音楽練習アプリケーションです。お客様のプライバシー保護に取り組んでいます。本ポリシーは、Etudeがお客様の情報をどのように取り扱うかについて説明します。</p>
+
+    <h2>1. 収集するデータ</h2>
+    <p>Etudeは完全にオフラインで動作するよう設計されています。アプリの使用にアカウント登録は不要です。</p>
+    <p><strong>個人データは一切収集しません。</strong></p>
+
+    <h2>2. ローカルストレージ</h2>
+    <p>Etudeはお客様の設定をデバイスのローカルストレージ（UserDefaults / AsyncStorage）に保存します。このデータはお客様のデバイスから外部に送信されることはありません。保存される情報：</p>
+    <ul>
+      <li>アプリ設定（テーマ、再生設定、レイアウトオプション）</li>
+      <li>楽譜メタデータ（タイトル、最終閲覧日）</li>
+      <li>アプリ内購入のステータス</li>
+    </ul>
+
+    <h2>3. 音楽ファイル</h2>
+    <p>インポートした音楽ファイル（MusicXML、MSCZ、MIDI、MP3、WAV）はお客様のデバイスにローカル保存されます。当方がお客様の音楽ファイルにアクセス、アップロード、共有することはありません。</p>
+
+    <h2>4. ネットワーク通信</h2>
+    <p>Etudeは以下の目的でのみインターネットに接続する場合があります：</p>
+    <ul>
+      <li><strong>SoundFontのダウンロード</strong>：MIDI再生用の楽器音源データをCDNからダウンロード</li>
+      <li><strong>アプリ内購入</strong>：Apple App Storeを通じた購入処理</li>
+    </ul>
+    <p>これらの接続において個人データが送信されることはありません。</p>
+
+    <h2>5. サードパーティサービス</h2>
+    <p>当アプリはサードパーティの分析、広告、トラッキングサービスを一切使用していません。ユーザーデータを収集するSDKも統合していません。</p>
+
+    <h2>6. お子様のプライバシー</h2>
+    <p>Etudeは13歳未満のお子様を含め、いかなる方からも個人情報を収集しません。</p>
+
+    <h2>7. ポリシーの変更</h2>
+    <p>本プライバシーポリシーは随時更新される場合があります。変更がある場合は、更新された施行日とともにこのページに掲載されます。</p>
+
+    <h2>8. お問い合わせ</h2>
+    <p>本プライバシーポリシーについてご質問がある場合は、以下までご連絡ください：<a href="mailto:wall.ao.dev@gmail.com">wall.ao.dev@gmail.com</a></p>
+  </div>
+</article>
+
+<footer>
+  <div class="container">&copy; 2026 Etude. All rights reserved.</div>
+</footer>
+
+<script>
+  function toggleLang() {
+    document.body.classList.toggle('ja');
+    localStorage.setItem('etude-lang', document.body.classList.contains('ja') ? 'ja' : 'en');
+  }
+  (function() {
+    var saved = localStorage.getItem('etude-lang');
+    if (saved === 'ja' || (!saved && navigator.language.startsWith('ja'))) {
+      document.body.classList.add('ja');
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etude - Terms of Service</title>
+  <style>
+    :root {
+      --purple: #8746FF;
+      --bg: #0f0f14;
+      --surface: #1a1a24;
+      --text: #e8e8ed;
+      --text-secondary: #7a7a8c;
+      --border: #2a2a38;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+    nav {
+      position: sticky; top: 0;
+      background: rgba(15,15,20,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); z-index: 100;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    nav .logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+    nav .logo span { color: var(--purple); }
+    nav a.back { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+    nav a.back:hover { color: var(--text); }
+    .lang-toggle {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+      padding: 4px 10px; color: var(--text-secondary); font-size: 13px; cursor: pointer;
+    }
+    .lang-toggle:hover { border-color: var(--purple); color: var(--text); }
+    article { padding: 60px 0 80px; }
+    h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .effective { color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; }
+    .intro { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
+    h2 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+    p { color: var(--text-secondary); font-size: 15px; margin-bottom: 12px; }
+    p strong { color: var(--text); }
+    ul { color: var(--text-secondary); font-size: 15px; margin: 0 0 12px 24px; }
+    li { margin-bottom: 6px; }
+    a { color: var(--purple); }
+    footer {
+      border-top: 1px solid var(--border); padding: 32px 0;
+      text-align: center; color: var(--text-secondary); font-size: 13px;
+    }
+    [data-lang="ja"] { display: none; }
+    body.ja [data-lang="ja"] { display: block; }
+    body.ja [data-lang="en"] { display: none; }
+    @media (max-width: 600px) { h1 { font-size: 24px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="index.html" class="logo"><span>Etude</span> Support</a>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <a href="index.html" class="back" data-lang="en">&larr; Back</a>
+      <a href="index.html" class="back" data-lang="ja">&larr; 戻る</a>
+      <button class="lang-toggle" onclick="toggleLang()">
+        <span data-lang="en">日本語</span>
+        <span data-lang="ja">English</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- EN -->
+<article data-lang="en">
+  <div class="container">
+    <h1>Terms of Service</h1>
+    <p class="effective">Effective: February 6, 2026</p>
+    <p class="intro">These Terms of Service ("Terms") govern your use of the Etude mobile application ("the app"). By using Etude, you agree to these Terms.</p>
+
+    <h2>1. License</h2>
+    <p>We grant you a limited, non-exclusive, non-transferable, revocable license to use Etude for personal, non-commercial purposes in accordance with these Terms.</p>
+
+    <h2>2. Your Content</h2>
+    <p>You retain ownership of all music files and content you import into Etude. We do not claim any rights over your content. You are responsible for ensuring you have the right to use any files you import.</p>
+
+    <h2>3. Subscriptions</h2>
+    <p>Etude offers optional auto-renewable subscriptions ("Etude Pro") to unlock additional features. Subscriptions are processed by Apple through the App Store and are subject to Apple's terms and conditions.</p>
+    <ul>
+      <li>Pro features are available with a monthly or yearly subscription</li>
+      <li>Refund requests must be directed to Apple</li>
+      <li>You can restore subscriptions on any device signed in with the same Apple ID</li>
+      <li>Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period</li>
+      <li>You can manage or cancel subscriptions in your App Store account settings</li>
+      <li>Any unused portion of a free trial period will be forfeited when you purchase a subscription</li>
+    </ul>
+
+    <h2>4. Acceptable Use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Reverse engineer, decompile, or disassemble the app</li>
+      <li>Use the app for any illegal purpose</li>
+      <li>Attempt to bypass any security features or access restrictions</li>
+    </ul>
+
+    <h2>5. Intellectual Property</h2>
+    <p>The app, including its design, code, and branding, is owned by the developer and protected by intellectual property laws. Sample scores included in the app are provided for demonstration purposes only.</p>
+
+    <h2>6. Disclaimer of Warranties</h2>
+    <p>Etude is provided "as is" without warranties of any kind, express or implied. We do not guarantee that the app will be error-free, uninterrupted, or free of harmful components.</p>
+
+    <h2>7. Limitation of Liability</h2>
+    <p>To the maximum extent permitted by applicable law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the app.</p>
+
+    <h2>8. Changes to These Terms</h2>
+    <p>We may update these Terms from time to time. Continued use of the app after changes constitutes acceptance of the new Terms.</p>
+
+    <h2>9. Governing Law</h2>
+    <p>These Terms shall be governed by and construed in accordance with the laws of Japan.</p>
+
+    <h2>10. Contact Us</h2>
+    <p>If you have questions about these Terms, please contact us at: <a href="mailto:wall.ao.dev@gmail.com">wall.ao.dev@gmail.com</a></p>
+  </div>
+</article>
+
+<!-- JA -->
+<article data-lang="ja">
+  <div class="container">
+    <h1>利用規約</h1>
+    <p class="effective">施行日: 2026年2月6日</p>
+    <p class="intro">本利用規約（以下「本規約」）は、Etudeモバイルアプリケーション（以下「本アプリ」）のご利用に適用されます。Etudeを使用することにより、本規約に同意したものとみなします。</p>
+
+    <h2>1. ライセンス</h2>
+    <p>当方は、本規約に従い、個人的かつ非商用目的でEtudeを使用するための、限定的、非独占的、譲渡不可、取消可能なライセンスをお客様に付与します。</p>
+
+    <h2>2. お客様のコンテンツ</h2>
+    <p>Etudeにインポートしたすべての音楽ファイルおよびコンテンツの所有権はお客様に帰属します。当方はお客様のコンテンツに対していかなる権利も主張しません。インポートするファイルの使用権限があることを確認する責任はお客様にあります。</p>
+
+    <h2>3. サブスクリプション</h2>
+    <p>Etudeは追加機能をアンロックするためのオプションの自動更新サブスクリプション（「Etude Pro」）を提供しています。サブスクリプションはApple App Storeを通じて処理され、Appleの利用規約が適用されます。</p>
+    <ul>
+      <li>Pro機能は月額または年額のサブスクリプションで利用できます</li>
+      <li>返金リクエストはAppleにお問い合わせください</li>
+      <li>同じApple IDでサインインしている任意のデバイスでサブスクリプションを復元できます</li>
+      <li>現在の期間終了の24時間前までにキャンセルしない限り、サブスクリプションは自動的に更新されます</li>
+      <li>購入後、App Storeのアカウント設定からサブスクリプションの管理・キャンセルができます</li>
+      <li>サブスクリプション購入時に、無料トライアル期間の未使用分は失効します</li>
+    </ul>
+
+    <h2>4. 利用上の注意</h2>
+    <p>お客様は以下の行為を行わないことに同意します：</p>
+    <ul>
+      <li>アプリのリバースエンジニアリング、逆コンパイル、または逆アセンブル</li>
+      <li>違法な目的でのアプリの使用</li>
+      <li>セキュリティ機能またはアクセス制限の回避の試み</li>
+    </ul>
+
+    <h2>5. 知的財産権</h2>
+    <p>アプリのデザイン、コード、ブランディングを含む本アプリは、開発者が所有し、知的財産法により保護されています。アプリに含まれるサンプル楽譜はデモンストレーション目的でのみ提供されています。</p>
+
+    <h2>6. 保証の免責</h2>
+    <p>Etudeは明示または黙示を問わず、いかなる種類の保証もなく「現状有姿」で提供されます。アプリがエラーなく、中断なく、有害なコンポーネントなく動作することを保証するものではありません。</p>
+
+    <h2>7. 責任の制限</h2>
+    <p>適用法令で許容される最大限度において、お客様のアプリの使用に起因する間接的、偶発的、特別、結果的、または懲罰的損害について、当方は一切の責任を負いません。</p>
+
+    <h2>8. 本規約の変更</h2>
+    <p>本規約は随時更新される場合があります。変更後もアプリを継続して使用することにより、新しい規約に同意したものとみなされます。</p>
+
+    <h2>9. 準拠法</h2>
+    <p>本規約は日本法に準拠し、日本法に従って解釈されるものとします。</p>
+
+    <h2>10. お問い合わせ</h2>
+    <p>本規約についてご質問がある場合は、以下までご連絡ください：<a href="mailto:wall.ao.dev@gmail.com">wall.ao.dev@gmail.com</a></p>
+  </div>
+</article>
+
+<footer>
+  <div class="container">&copy; 2026 Etude. All rights reserved.</div>
+</footer>
+
+<script>
+  function toggleLang() {
+    document.body.classList.toggle('ja');
+    localStorage.setItem('etude-lang', document.body.classList.contains('ja') ? 'ja' : 'en');
+  }
+  (function() {
+    var saved = localStorage.getItem('etude-lang');
+    if (saved === 'ja' || (!saved && navigator.language.startsWith('ja'))) {
+      document.body.classList.add('ja');
+    }
+  })();
+</script>
+
+</body>
+</html>
