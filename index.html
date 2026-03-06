@@ -3,453 +3,691 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Etude - Support</title>
+  <title>Etude - Sheet Music Player & Practice Tools</title>
+  <meta name="description" content="Etude is a music practice app with sheet music playback, audio tools, tuner, metronome, and chord analysis. MusicXML, MSCZ, MIDI support.">
+  <meta name="theme-color" content="#0f0f14">
+  <meta property="og:title" content="Etude - Sheet Music Player & Practice Tools">
+  <meta property="og:description" content="Everything you need for music practice. Sheet music playback, audio player, tuner, metronome, and more.">
+  <meta property="og:image" content="https://kabe-wall.github.io/etude-support/assets/hero.png">
+  <meta property="og:url" content="https://kabe-wall.github.io/etude-support/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon.png">
   <style>
     :root {
       --purple: #8746FF;
-      --purple-light: #a670ff;
+      --purple-light: #9a5fff;
+      --purple-glow: rgba(135, 70, 255, 0.15);
       --bg: #0f0f14;
+      --bg-alt: #0a0a0e;
       --surface: #1a1a24;
-      --surface2: #252532;
+      --surface-hover: #222233;
       --text: #e8e8ed;
       --text-secondary: #7a7a8c;
+      --text-dim: #55556a;
       --border: #2a2a38;
+      --gradient-hero: linear-gradient(180deg, #0f0f14 0%, #161622 50%, #0f0f14 100%);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* Nav */
+    /* NAV */
     nav {
-      position: sticky;
-      top: 0;
-      background: rgba(15, 15, 20, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15, 15, 20, 0.8);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(42, 42, 56, 0.5);
     }
-
-    nav .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between; height: 60px;
     }
-
-    nav .logo {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text); font-weight: 700; font-size: 20px;
     }
-
-    nav .logo span { color: var(--purple); }
-
-    .nav-links { display: flex; gap: 24px; }
-
-    .nav-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.2s;
+    .nav-logo img { width: 32px; height: 32px; border-radius: 8px; }
+    .nav-logo span { color: var(--purple); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-btn {
+      background: transparent; border: 1px solid var(--border); border-radius: 8px;
+      padding: 6px 12px; color: var(--text-secondary); font-size: 13px; cursor: pointer;
+      transition: all 0.2s;
     }
-
-    .nav-links a:hover { color: var(--text); }
-
-    .lang-toggle {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 10px;
-      color: var(--text-secondary);
-      font-size: 13px;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-
-    .lang-toggle:hover { border-color: var(--purple); color: var(--text); }
-
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 80px 0 48px;
-    }
-
-    .hero h1 {
-      font-size: 40px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-
-    .hero h1 span { color: var(--purple); }
-
-    .hero p {
-      color: var(--text-secondary);
-      font-size: 17px;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
-    /* Sections */
-    section { padding: 48px 0; }
-
-    section h2 {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 24px;
-      letter-spacing: -0.01em;
-    }
-
-    /* FAQ */
-    .faq-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-
-    .faq-q {
-      padding: 16px 20px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      font-size: 15px;
-      user-select: none;
-      transition: background 0.15s;
-    }
-
-    .faq-q:hover { background: var(--surface2); }
-
-    .faq-q::after {
-      content: '+';
-      font-size: 20px;
-      color: var(--purple);
-      font-weight: 400;
-      transition: transform 0.2s;
-    }
-
-    .faq-item.open .faq-q::after {
-      content: '\2212';
-    }
-
-    .faq-a {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-    }
-
-    .faq-item.open .faq-a {
-      max-height: 500px;
-      padding: 0 20px 16px;
-    }
-
-    .faq-a p {
-      color: var(--text-secondary);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    /* Contact */
-    .contact-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px;
-      text-align: center;
-    }
-
-    .contact-card p {
-      color: var(--text-secondary);
-      font-size: 15px;
-      margin-bottom: 16px;
-    }
-
-    .contact-card a {
-      display: inline-block;
-      background: var(--purple);
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 28px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 15px;
+    .lang-btn:hover { border-color: var(--purple); color: var(--text); }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--purple); color: #fff; text-decoration: none;
+      padding: 8px 18px; border-radius: 10px; font-size: 14px; font-weight: 600;
       transition: background 0.2s;
     }
+    .nav-cta:hover { background: var(--purple-light); }
+    .nav-cta svg { width: 16px; height: 16px; }
 
-    .contact-card a:hover { background: var(--purple-light); }
-
-    /* Links */
-    .links-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    /* HERO */
+    .hero {
+      padding: 140px 24px 60px;
+      text-align: center;
+      background: var(--gradient-hero);
+      position: relative;
+      overflow: hidden;
     }
+    .hero::before {
+      content: '';
+      position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 100px;
+      padding: 6px 16px; font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px); font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px;
+      text-wrap: balance;
+    }
+    .hero h1 .accent { color: var(--purple); }
+    .hero .subtitle {
+      font-size: clamp(16px, 2.5vw, 20px); color: var(--text-secondary);
+      max-width: 560px; margin: 0 auto 40px; line-height: 1.6;
+    }
+    .hero-cta-group { display: flex; justify-content: center; gap: 12px; margin-bottom: 60px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--purple); color: #fff; text-decoration: none;
+      padding: 14px 28px; border-radius: 14px; font-size: 16px; font-weight: 600;
+      transition: all 0.2s; border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--purple-light); transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface); color: var(--text); text-decoration: none;
+      padding: 14px 28px; border-radius: 14px; font-size: 16px; font-weight: 600;
+      border: 1px solid var(--border); transition: all 0.2s; cursor: pointer;
+    }
+    .btn-secondary:hover { border-color: var(--purple); background: var(--surface-hover); }
+    .hero-image {
+      max-width: 480px; width: 100%; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .hero-image img { width: 100%; height: auto; border-radius: 20px; }
 
-    .link-card {
+    /* FEATURES GRID */
+    .features {
+      padding: 100px 24px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .section-label {
+      text-transform: uppercase; font-size: 13px; font-weight: 700;
+      color: var(--purple); letter-spacing: 0.1em; margin-bottom: 12px;
+      text-align: center;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+      letter-spacing: -0.02em; text-align: center; margin-bottom: 16px;
+      text-wrap: balance;
+    }
+    .section-desc {
+      color: var(--text-secondary); text-align: center;
+      max-width: 560px; margin: 0 auto 64px; font-size: 16px;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      text-decoration: none;
-      color: var(--text);
-      transition: border-color 0.2s, transform 0.15s;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .feature-card:hover { border-color: rgba(135, 70, 255, 0.4); transform: translateY(-4px); }
+    .feature-card-img {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+      display: flex; align-items: flex-start; justify-content: center;
+      background: var(--bg-alt);
+    }
+    .feature-card-img img {
+      width: 100%; height: 100%; object-fit: cover; object-position: top;
+    }
+    .feature-card-body { padding: 24px; }
+    .feature-card-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card-body p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
+
+    /* SHOWCASE */
+    .showcase {
+      padding: 100px 24px;
+      background: var(--bg-alt);
+    }
+    .showcase-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .showcase-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-bottom: 100px;
+    }
+    .showcase-row:last-child { margin-bottom: 0; }
+    .showcase-row.reverse { direction: rtl; }
+    .showcase-row.reverse > * { direction: ltr; }
+    .showcase-text .label {
+      font-size: 13px; font-weight: 700; color: var(--purple);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+    }
+    .showcase-text h2 {
+      font-size: clamp(24px, 3vw, 36px); font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2;
+    }
+    .showcase-text p { color: var(--text-secondary); font-size: 16px; line-height: 1.7; margin-bottom: 12px; }
+    .showcase-text ul {
+      list-style: none; padding: 0; margin-top: 20px;
+    }
+    .showcase-text ul li {
+      color: var(--text-secondary); font-size: 15px; padding: 6px 0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .showcase-text ul li::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--purple); flex-shrink: 0;
+    }
+    .showcase-img {
+      display: flex; justify-content: center;
+    }
+    .showcase-img img {
+      max-width: 320px; width: 100%; height: auto;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
 
-    .link-card:hover {
-      border-color: var(--purple);
-      transform: translateY(-2px);
+    /* TOOLS */
+    .tools-strip {
+      padding: 100px 24px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .tool-card:hover { border-color: rgba(135, 70, 255, 0.4); }
+    .tool-card-img {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+      background: var(--bg-alt);
+    }
+    .tool-card-img img {
+      width: 100%; height: 100%; object-fit: cover; object-position: top;
+    }
+    .tool-card-body { padding: 20px; }
+    .tool-card-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .tool-card-body p { color: var(--text-secondary); font-size: 13px; }
+
+    /* FORMATS */
+    .formats {
+      padding: 80px 24px;
+      text-align: center;
+      background: var(--bg-alt);
+    }
+    .format-chips {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+      max-width: 600px; margin: 32px auto 0;
+    }
+    .format-chip {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600; color: var(--text);
     }
 
-    .link-card h3 { font-size: 15px; margin-bottom: 4px; }
-
-    .link-card p {
-      color: var(--text-secondary);
-      font-size: 13px;
+    /* CTA */
+    .cta-section {
+      padding: 120px 24px;
+      text-align: center;
+      position: relative;
     }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section h2 {
+      font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 16px;
+      position: relative; z-index: 1;
+    }
+    .cta-section p {
+      color: var(--text-secondary); font-size: 18px; margin-bottom: 40px;
+      position: relative; z-index: 1;
+    }
+    .appstore-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #000; color: #fff; text-decoration: none;
+      padding: 10px 24px 10px 18px; border-radius: 14px;
+      border: 1px solid #333;
+      transition: all 0.2s;
+      position: relative; z-index: 1;
+    }
+    .appstore-badge:hover { border-color: #555; transform: translateY(-1px); }
+    .appstore-badge svg { width: 28px; height: 28px; }
+    .appstore-badge .badge-text { text-align: left; }
+    .appstore-badge .badge-text .small { font-size: 10px; display: block; line-height: 1; opacity: 0.8; }
+    .appstore-badge .badge-text .big { font-size: 18px; font-weight: 600; display: block; line-height: 1.2; }
 
-    /* Footer */
+    /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
-      padding: 32px 0;
+      padding: 40px 24px;
       text-align: center;
-      color: var(--text-secondary);
-      font-size: 13px;
     }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .hero h1 { font-size: 28px; }
-      .hero p { font-size: 15px; }
-      .links-grid { grid-template-columns: 1fr; }
-      .nav-links { gap: 16px; }
-      .nav-links a { font-size: 13px; }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
     }
+    .footer-links {
+      display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--text-secondary); text-decoration: none; font-size: 14px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--purple); }
+    .footer-copy { color: var(--text-dim); font-size: 13px; }
 
-    /* Hidden lang */
+    /* LANG */
     [data-lang="ja"] { display: none; }
     body.ja [data-lang="ja"] { display: block; }
     body.ja [data-lang="en"] { display: none; }
-    body.ja .faq-item[data-lang="ja"] { display: block; }
+    body.ja [data-lang-inline="ja"] { display: inline; }
+    body.ja [data-lang-inline="en"] { display: none; }
+    [data-lang-inline="ja"] { display: none; }
+    [data-lang-inline="en"] { display: inline; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .showcase-row { grid-template-columns: 1fr; gap: 40px; }
+      .showcase-row.reverse { direction: ltr; }
+      .showcase-img { order: -1; }
+      .tools-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding: 120px 20px 40px; }
+      .hero-cta-group { flex-direction: column; align-items: center; }
+      .tools-grid { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
+      .feature-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+      .nav-cta .btn-label { display: none; }
+    }
+
+    /* SCROLL ANIMATIONS */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
 
 <nav>
-  <div class="container">
-    <a href="#" class="logo"><span>Etude</span> Support</a>
-    <div style="display:flex;align-items:center;gap:20px;">
-      <div class="nav-links">
-        <a href="#faq" data-lang="en">FAQ</a>
-        <a href="#faq" data-lang="ja">FAQ</a>
-        <a href="#contact" data-lang="en">Contact</a>
-        <a href="#contact" data-lang="ja">お問い合わせ</a>
-      </div>
-      <button class="lang-toggle" onclick="toggleLang()">
-        <span data-lang="en">日本語</span>
-        <span data-lang="ja">English</span>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="assets/icon.png" alt="Etude" width="32" height="32">
+      <span>Etude</span>
+    </a>
+    <div class="nav-right">
+      <button class="lang-btn" onclick="toggleLang()">
+        <span data-lang-inline="en">日本語</span>
+        <span data-lang-inline="ja">English</span>
       </button>
+      <a href="https://apps.apple.com/app/etude-sheet-music-player/id6742598930" class="nav-cta">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <span class="btn-label" data-lang-inline="en">App Store</span>
+        <span class="btn-label" data-lang-inline="ja">App Store</span>
+      </a>
     </div>
   </div>
 </nav>
 
-<!-- Hero EN -->
-<div data-lang="en">
-  <div class="hero">
-    <div class="container">
-      <h1><span>Etude</span> Support</h1>
-      <p>Your sheet music, now with sound. Find answers to common questions or get in touch with us.</p>
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    <span data-lang-inline="en">Available on the App Store</span>
+    <span data-lang-inline="ja">App Store で配信中</span>
+  </div>
+
+  <div data-lang="en">
+    <h1>Everything you need<br>for <span class="accent">music practice.</span></h1>
+    <p class="subtitle">Sheet music playback, audio tools, tuner, metronome, chord analysis — all in one app. Supports MusicXML, MSCZ, and MIDI.</p>
+  </div>
+  <div data-lang="ja">
+    <h1>練習のすべてが、<br><span class="accent">ここに。</span></h1>
+    <p class="subtitle">楽譜再生、音源再生、チューナー、メトロノーム、コード分析。音楽練習に必要なすべてを、ひとつのアプリに。</p>
+  </div>
+
+  <div class="hero-cta-group">
+    <a href="https://apps.apple.com/app/etude-sheet-music-player/id6742598930" class="btn-primary">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <span data-lang-inline="en">Download Free</span>
+      <span data-lang-inline="ja">無料ダウンロード</span>
+    </a>
+    <a href="#features" class="btn-secondary">
+      <span data-lang-inline="en">See Features</span>
+      <span data-lang-inline="ja">機能を見る</span>
+    </a>
+  </div>
+
+  <div class="hero-image">
+    <img src="assets/hero.png" alt="Etude app screenshots" loading="eager" width="480" height="960">
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div data-lang="en">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">A complete practice toolkit</h2>
+    <p class="section-desc">From score playback to audio processing, Etude has everything a musician needs — without the clutter.</p>
+  </div>
+  <div data-lang="ja">
+    <p class="section-label">機能</p>
+    <h2 class="section-title">練習に必要なすべてを、ひとつに</h2>
+    <p class="section-desc">楽譜の再生から音声処理まで。音楽家のための、シンプルで強力なツール。</p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-card-img">
+        <img src="assets/ss-library.png" alt="Score Library" loading="lazy" width="390" height="844">
+      </div>
+      <div class="feature-card-body">
+        <div data-lang="en"><h3>Score Library</h3><p>Import and organize your sheet music. Support for groups, favorites, and quick search.</p></div>
+        <div data-lang="ja"><h3>楽譜ライブラリ</h3><p>楽譜をインポートして整理。グループ分け、お気に入り、クイック検索に対応。</p></div>
+      </div>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-card-img">
+        <img src="assets/ss-playback.png" alt="Score Playback" loading="lazy" width="390" height="844">
+      </div>
+      <div class="feature-card-body">
+        <div data-lang="en"><h3>Smart Playback</h3><p>Real-time cursor follows the music. Adjust tempo, loop sections, and switch instruments.</p></div>
+        <div data-lang="ja"><h3>スマート再生</h3><p>カーソルがリアルタイムで音楽を追いかける。テンポ変更、区間ループ、楽器変更も。</p></div>
+      </div>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-card-img">
+        <img src="assets/ss-parts.png" alt="Part Mixer" loading="lazy" width="390" height="844">
+      </div>
+      <div class="feature-card-body">
+        <div data-lang="en"><h3>Part Mixer</h3><p>Solo, mute, and adjust volume for each part. Perfect for ensemble practice.</p></div>
+        <div data-lang="ja"><h3>パートミキサー</h3><p>各パートのソロ・ミュート・音量調整。アンサンブル練習に最適。</p></div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Hero JA -->
-<div data-lang="ja">
-  <div class="hero">
-    <div class="container">
-      <h1><span>Etude</span> サポート</h1>
-      <p>楽譜を「聴ける」練習パートナー。よくある質問の確認やお問い合わせはこちらから。</p>
+<section class="showcase">
+  <div class="showcase-inner">
+    <div class="showcase-row fade-up">
+      <div class="showcase-img">
+        <img src="assets/ss-audio.png" alt="Audio Player" loading="lazy" width="320" height="693">
+      </div>
+      <div class="showcase-text">
+        <div data-lang="en">
+          <p class="label">Audio Player</p>
+          <h2>Process audio freely</h2>
+          <p>Import MP3, WAV, M4A files and adjust pitch and tempo independently. Slow down a fast passage without changing the key, or transpose without affecting the speed.</p>
+          <ul>
+            <li>Pitch shift: -12 to +12 semitones</li>
+            <li>Tempo change: 50% to 150%</li>
+            <li>A-B loop for section repeat</li>
+            <li>Stereo waveform display</li>
+            <li>Export processed audio as MP3</li>
+          </ul>
+        </div>
+        <div data-lang="ja">
+          <p class="label">オーディオプレーヤー</p>
+          <h2>音声を自由に加工</h2>
+          <p>MP3、WAV、M4Aをインポートし、ピッチとテンポを独立して調整。速いフレーズをキーを変えずにスロー再生、ピッチだけ変更も可能。</p>
+          <ul>
+            <li>ピッチ変更: -12 〜 +12 半音</li>
+            <li>テンポ変更: 50% 〜 150%</li>
+            <li>A-Bループで区間リピート</li>
+            <li>ステレオ波形表示</li>
+            <li>加工済み音声をMP3でエクスポート</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase-row reverse fade-up">
+      <div class="showcase-img">
+        <img src="assets/ss-pianoroll.png" alt="Piano Roll" loading="lazy" width="320" height="693">
+      </div>
+      <div class="showcase-text">
+        <div data-lang="en">
+          <p class="label">Piano Roll</p>
+          <h2>See every note at a glance</h2>
+          <p>The piano roll view shows all parts as color-coded blocks. Tap any note to hear it. Available in both portrait and full-screen landscape modes.</p>
+        </div>
+        <div data-lang="ja">
+          <p class="label">ピアノロール</p>
+          <h2>全パートを一目で俯瞰</h2>
+          <p>ピアノロール表示で全パートをカラーブロックで表示。音符をタップして試聴。縦画面・横画面フルスクリーンに対応。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase-row fade-up">
+      <div class="showcase-img">
+        <img src="assets/ss-markup.png" alt="Annotations" loading="lazy" width="320" height="693">
+      </div>
+      <div class="showcase-text">
+        <div data-lang="en">
+          <p class="label">Annotations</p>
+          <h2>Mark up your scores</h2>
+          <p>Draw directly on the score with pen, highlighter, or text. Add stamps, change colors, and undo freely. Your annotations are saved automatically.</p>
+        </div>
+        <div data-lang="ja">
+          <p class="label">アノテーション</p>
+          <h2>ペンで自由に書き込み</h2>
+          <p>ペン、ハイライト、テキストで楽譜に直接書き込み。スタンプ、色変更、アンドゥも自在。書き込みは自動保存。</p>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="container">
+<section class="tools-strip">
+  <div data-lang="en">
+    <p class="section-label">Practice Tools</p>
+    <h2 class="section-title">Built-in tools for every musician</h2>
+    <p class="section-desc">Tuner, metronome, chord tools, and more — all designed for daily practice.</p>
+  </div>
+  <div data-lang="ja">
+    <p class="section-label">練習ツール</p>
+    <h2 class="section-title">演奏家のための内蔵ツール</h2>
+    <p class="section-desc">チューナー、メトロノーム、コードツール。毎日の練習をサポート。</p>
+  </div>
 
-  <!-- FAQ EN -->
-  <section id="faq" data-lang="en">
-    <h2>Frequently Asked Questions</h2>
-
-    <div class="faq-item" data-lang="en">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What file formats does Etude support?</div>
-      <div class="faq-a"><p><strong>Score files:</strong> MusicXML (.musicxml, .xml), compressed MusicXML (.mxl), MuseScore (.mscz), MIDI (.mid, .midi)<br><strong>Audio files:</strong> MP3, WAV, M4A, FLAC, OGG<br><strong>Video files:</strong> MP4, MOV (audio is extracted for practice)</p></div>
+  <div class="tools-grid">
+    <div class="tool-card fade-up">
+      <div class="tool-card-img">
+        <img src="assets/ss-tuner.png" alt="Tuner" loading="lazy" width="390" height="844">
+      </div>
+      <div class="tool-card-body">
+        <div data-lang="en"><h3>Chromatic Tuner</h3><p>Real-time pitch detection with tone generator. Customizable A4 reference.</p></div>
+        <div data-lang="ja"><h3>クロマチックチューナー</h3><p>リアルタイムピッチ検出とトーンジェネレーター。A4基準音のカスタマイズ可能。</p></div>
+      </div>
     </div>
-
-    <div class="faq-item" data-lang="en">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Does Etude require an internet connection?</div>
-      <div class="faq-a"><p>No. Etude works entirely offline. The only network access is for downloading instrument sounds (SoundFont) on first use and processing in-app purchases. No personal data is ever transmitted.</p></div>
+    <div class="tool-card fade-up">
+      <div class="tool-card-img">
+        <img src="assets/ss-metronome.png" alt="Metronome" loading="lazy" width="390" height="844">
+      </div>
+      <div class="tool-card-body">
+        <div data-lang="en"><h3>Metronome</h3><p>Tap tempo, time signatures, subdivisions, and per-beat accent control.</p></div>
+        <div data-lang="ja"><h3>メトロノーム</h3><p>タップテンポ、拍子、サブディビジョン、拍ごとのアクセント設定。</p></div>
+      </div>
     </div>
-
-    <div class="faq-item" data-lang="en">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is Etude Pro?</div>
-      <div class="faq-a"><p>Etude Pro is an optional subscription that unlocks additional features: bookmarks, annotations, audio effects, chord tools, video import, unlimited score/audio library, and more. Core playback features are free.</p></div>
+    <div class="tool-card fade-up">
+      <div class="tool-card-img">
+        <img src="assets/ss-chords.png" alt="Chord Identifier" loading="lazy" width="390" height="844">
+      </div>
+      <div class="tool-card-body">
+        <div data-lang="en"><h3>Chord Tools</h3><p>Identify chords instantly. Search by name or input notes on the fretboard.</p></div>
+        <div data-lang="ja"><h3>コードツール</h3><p>コードを瞬時に識別。名前検索やフレットボード入力にも対応。</p></div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="faq-item" data-lang="en">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do I cancel my subscription?</div>
-      <div class="faq-a"><p>Open the Settings app on your device &gt; tap your name at the top &gt; Subscriptions &gt; select Etude &gt; Cancel Subscription. You can cancel at least 24 hours before the next renewal date.</p></div>
+<section class="showcase">
+  <div class="showcase-inner">
+    <div class="showcase-row fade-up">
+      <div class="showcase-img">
+        <img src="assets/ss-eq.png" alt="Parametric EQ" loading="lazy" width="320" height="693">
+      </div>
+      <div class="showcase-text">
+        <div data-lang="en">
+          <p class="label">Pro Features</p>
+          <h2>Go further with Etude Pro</h2>
+          <p>Unlock advanced tools for serious musicians. Parametric EQ, audio effects with 40+ presets, unlimited scores, audio export, and more.</p>
+          <ul>
+            <li>5-band parametric equalizer</li>
+            <li>40+ audio effect presets</li>
+            <li>Unlimited score imports</li>
+            <li>MP3/WAV audio export</li>
+            <li>Note name overlay</li>
+            <li>Piano roll view</li>
+          </ul>
+        </div>
+        <div data-lang="ja">
+          <p class="label">Pro 機能</p>
+          <h2>Etude Pro でさらに先へ</h2>
+          <p>本格派のための高度なツール。パラメトリックEQ、40種以上のエフェクトプリセット、楽譜無制限インポートなど。</p>
+          <ul>
+            <li>5バンドパラメトリックイコライザー</li>
+            <li>40種以上のオーディオエフェクト</li>
+            <li>楽譜の無制限インポート</li>
+            <li>MP3/WAVオーディオエクスポート</li>
+            <li>音名オーバーレイ表示</li>
+            <li>ピアノロール表示</li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="faq-item" data-lang="en">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do I restore my purchase on a new device?</div>
-      <div class="faq-a"><p>Go to Settings tab in Etude &gt; Pro Version &gt; Restore Subscription. Make sure you are signed in with the same Apple ID used for the original purchase.</p></div>
+<section class="formats">
+  <div data-lang="en">
+    <p class="section-label">Compatibility</p>
+    <h2 class="section-title">Works with your files</h2>
+  </div>
+  <div data-lang="ja">
+    <p class="section-label">互換性</p>
+    <h2 class="section-title">あなたのファイルに対応</h2>
+  </div>
+  <div class="format-chips">
+    <span class="format-chip">MusicXML</span>
+    <span class="format-chip">MSCZ</span>
+    <span class="format-chip">MIDI</span>
+    <span class="format-chip">MP3</span>
+    <span class="format-chip">WAV</span>
+    <span class="format-chip">M4A</span>
+    <span class="format-chip">MP4</span>
+    <span class="format-chip">MOV</span>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div data-lang="en">
+    <h2>Start practicing smarter</h2>
+    <p>Free to download. No account required.</p>
+  </div>
+  <div data-lang="ja">
+    <h2>もっとスマートに練習しよう</h2>
+    <p>無料でダウンロード。アカウント登録不要。</p>
+  </div>
+  <a href="https://apps.apple.com/app/etude-sheet-music-player/id6742598930" class="appstore-badge">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    <div class="badge-text">
+      <span class="small" data-lang-inline="en">Download on the</span>
+      <span class="small" data-lang-inline="ja">からダウンロード</span>
+      <span class="big">App Store</span>
     </div>
-
-    <div class="faq-item" data-lang="en">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I change pitch and tempo independently?</div>
-      <div class="faq-a"><p>Yes. For audio files, pitch and tempo are fully independent — change one without affecting the other. For score playback, tempo can be adjusted freely.</p></div>
-    </div>
-
-    <div class="faq-item" data-lang="en">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is my data safe?</div>
-      <div class="faq-a"><p>Absolutely. All your music files and settings are stored locally on your device. We do not collect any personal data, and we do not use any analytics or tracking services. See our <a href="privacy.html" style="color:var(--purple)">Privacy Policy</a> for details.</p></div>
-    </div>
-  </section>
-
-  <!-- FAQ JA -->
-  <section id="faq-ja" data-lang="ja">
-    <h2>よくある質問</h2>
-
-    <div class="faq-item" data-lang="ja">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">対応ファイル形式は？</div>
-      <div class="faq-a"><p><strong>楽譜:</strong> MusicXML (.musicxml, .xml)、圧縮MusicXML (.mxl)、MuseScore (.mscz)、MIDI (.mid, .midi)<br><strong>音声:</strong> MP3, WAV, M4A, FLAC, OGG<br><strong>動画:</strong> MP4, MOV（音声を抽出して練習に使用）</p></div>
-    </div>
-
-    <div class="faq-item" data-lang="ja">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">インターネット接続は必要ですか？</div>
-      <div class="faq-a"><p>いいえ。Etudeは完全オフラインで動作します。ネットワークアクセスは初回の楽器音源（SoundFont）ダウンロードとアプリ内購入の処理のみです。個人データが送信されることはありません。</p></div>
-    </div>
-
-    <div class="faq-item" data-lang="ja">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Etude Proとは？</div>
-      <div class="faq-a"><p>Etude Proはオプションのサブスクリプションで、ブックマーク、アノテーション、オーディオエフェクト、コードツール、動画インポート、無制限ライブラリなどの追加機能をアンロックします。基本的な再生機能は無料です。</p></div>
-    </div>
-
-    <div class="faq-item" data-lang="ja">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">サブスクリプションのキャンセル方法は？</div>
-      <div class="faq-a"><p>iPhoneの設定アプリ &gt; 上部の自分の名前をタップ &gt; サブスクリプション &gt; Etudeを選択 &gt; サブスクリプションをキャンセル。次回更新日の24時間前までにキャンセルできます。</p></div>
-    </div>
-
-    <div class="faq-item" data-lang="ja">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">新しいデバイスで購入を復元するには？</div>
-      <div class="faq-a"><p>Etudeの設定タブ &gt; Pro版 &gt; サブスクリプションを復元。購入時と同じApple IDでサインインしていることを確認してください。</p></div>
-    </div>
-
-    <div class="faq-item" data-lang="ja">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">ピッチとテンポを独立して変更できますか？</div>
-      <div class="faq-a"><p>はい。音声ファイルでは、ピッチとテンポを互いに影響なく独立して変更できます。楽譜再生ではテンポを自由に調整できます。</p></div>
-    </div>
-
-    <div class="faq-item" data-lang="ja">
-      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">データは安全ですか？</div>
-      <div class="faq-a"><p>はい。すべての音楽ファイルと設定はデバイスにローカル保存されます。個人データの収集は一切行わず、分析・トラッキングサービスも使用していません。詳細は<a href="privacy.html" style="color:var(--purple)">プライバシーポリシー</a>をご覧ください。</p></div>
-    </div>
-  </section>
-
-  <!-- Contact EN -->
-  <section id="contact" data-lang="en">
-    <h2>Contact Us</h2>
-    <div class="contact-card">
-      <p>Can't find the answer you're looking for?<br>We're happy to help.</p>
-      <a href="mailto:wall.ao.dev@gmail.com">Send Email</a>
-    </div>
-  </section>
-
-  <!-- Contact JA -->
-  <section id="contact-ja" data-lang="ja">
-    <h2>お問い合わせ</h2>
-    <div class="contact-card">
-      <p>お探しの回答が見つかりませんか？<br>お気軽にお問い合わせください。</p>
-      <a href="mailto:wall.ao.dev@gmail.com">メールを送る</a>
-    </div>
-  </section>
-
-  <!-- Links EN -->
-  <section data-lang="en">
-    <h2>Legal</h2>
-    <div class="links-grid">
-      <a href="privacy.html" class="link-card">
-        <h3>Privacy Policy</h3>
-        <p>How we handle your data</p>
-      </a>
-      <a href="terms.html" class="link-card">
-        <h3>Terms of Service</h3>
-        <p>Terms of using Etude</p>
-      </a>
-    </div>
-  </section>
-
-  <!-- Links JA -->
-  <section data-lang="ja">
-    <h2>法的情報</h2>
-    <div class="links-grid">
-      <a href="privacy.html" class="link-card">
-        <h3>プライバシーポリシー</h3>
-        <p>データの取り扱いについて</p>
-      </a>
-      <a href="terms.html" class="link-card">
-        <h3>利用規約</h3>
-        <p>Etudeの利用条件</p>
-      </a>
-    </div>
-  </section>
-
-</div>
+  </a>
+</section>
 
 <footer>
-  <div class="container">
-    &copy; 2026 Etude. All rights reserved.
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="support.html">
+        <span data-lang-inline="en">Support</span>
+        <span data-lang-inline="ja">サポート</span>
+      </a>
+      <a href="privacy.html">
+        <span data-lang-inline="en">Privacy Policy</span>
+        <span data-lang-inline="ja">プライバシーポリシー</span>
+      </a>
+      <a href="terms.html">
+        <span data-lang-inline="en">Terms of Service</span>
+        <span data-lang-inline="ja">利用規約</span>
+      </a>
+      <a href="mailto:wall.ao.dev@gmail.com">
+        <span data-lang-inline="en">Contact</span>
+        <span data-lang-inline="ja">お問い合わせ</span>
+      </a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Etude. All rights reserved.</p>
   </div>
 </footer>
 
 <script>
-  function toggleLang() {
-    document.body.classList.toggle('ja');
-    localStorage.setItem('etude-lang', document.body.classList.contains('ja') ? 'ja' : 'en');
+function toggleLang() {
+  document.body.classList.toggle('ja');
+  localStorage.setItem('etude-lang', document.body.classList.contains('ja') ? 'ja' : 'en');
+}
+(function() {
+  var saved = localStorage.getItem('etude-lang');
+  if (saved === 'ja' || (!saved && navigator.language.startsWith('ja'))) {
+    document.body.classList.add('ja');
   }
-
-  // Auto-detect language
-  (function() {
-    var saved = localStorage.getItem('etude-lang');
-    if (saved === 'ja' || (!saved && navigator.language.startsWith('ja'))) {
-      document.body.classList.add('ja');
-    }
-  })();
-
-  // Smooth scroll
-  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-    a.addEventListener('click', function(e) {
-      e.preventDefault();
-      var target = document.querySelector(this.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
+})();
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); }
   });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
 </script>
 
 </body>

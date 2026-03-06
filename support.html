@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etude - Support</title>
+  <style>
+    :root {
+      --purple: #8746FF;
+      --purple-light: #a670ff;
+      --bg: #0f0f14;
+      --surface: #1a1a24;
+      --surface2: #252532;
+      --text: #e8e8ed;
+      --text-secondary: #7a7a8c;
+      --border: #2a2a38;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 15, 20, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    nav .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    nav .logo span { color: var(--purple); }
+
+    .nav-links { display: flex; gap: 24px; }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .lang-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .lang-toggle:hover { border-color: var(--purple); color: var(--text); }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 0 48px;
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span { color: var(--purple); }
+
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 17px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Sections */
+    section { padding: 48px 0; }
+
+    section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    /* FAQ */
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 15px;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .faq-q:hover { background: var(--surface2); }
+
+    .faq-q::after {
+      content: '+';
+      font-size: 20px;
+      color: var(--purple);
+      font-weight: 400;
+      transition: transform 0.2s;
+    }
+
+    .faq-item.open .faq-q::after {
+      content: '\2212';
+    }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .faq-item.open .faq-a {
+      max-height: 500px;
+      padding: 0 20px 16px;
+    }
+
+    .faq-a p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Contact */
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .contact-card p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    .contact-card a {
+      display: inline-block;
+      background: var(--purple);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+
+    .contact-card a:hover { background: var(--purple-light); }
+
+    /* Links */
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .link-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .link-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-2px);
+    }
+
+    .link-card h3 { font-size: 15px; margin-bottom: 4px; }
+
+    .link-card p {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 28px; }
+      .hero p { font-size: 15px; }
+      .links-grid { grid-template-columns: 1fr; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 13px; }
+    }
+
+    /* Hidden lang */
+    [data-lang="ja"] { display: none; }
+    body.ja [data-lang="ja"] { display: block; }
+    body.ja [data-lang="en"] { display: none; }
+    body.ja .faq-item[data-lang="ja"] { display: block; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo"><span>Etude</span> Support</a>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div class="nav-links">
+        <a href="#faq" data-lang="en">FAQ</a>
+        <a href="#faq" data-lang="ja">FAQ</a>
+        <a href="#contact" data-lang="en">Contact</a>
+        <a href="#contact" data-lang="ja">お問い合わせ</a>
+      </div>
+      <button class="lang-toggle" onclick="toggleLang()">
+        <span data-lang="en">日本語</span>
+        <span data-lang="ja">English</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero EN -->
+<div data-lang="en">
+  <div class="hero">
+    <div class="container">
+      <h1><span>Etude</span> Support</h1>
+      <p>Your sheet music, now with sound. Find answers to common questions or get in touch with us.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Hero JA -->
+<div data-lang="ja">
+  <div class="hero">
+    <div class="container">
+      <h1><span>Etude</span> サポート</h1>
+      <p>楽譜を「聴ける」練習パートナー。よくある質問の確認やお問い合わせはこちらから。</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- FAQ EN -->
+  <section id="faq" data-lang="en">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item" data-lang="en">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What file formats does Etude support?</div>
+      <div class="faq-a"><p><strong>Score files:</strong> MusicXML (.musicxml, .xml), compressed MusicXML (.mxl), MuseScore (.mscz), MIDI (.mid, .midi)<br><strong>Audio files:</strong> MP3, WAV, M4A, FLAC, OGG<br><strong>Video files:</strong> MP4, MOV (audio is extracted for practice)</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="en">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Does Etude require an internet connection?</div>
+      <div class="faq-a"><p>No. Etude works entirely offline. The only network access is for downloading instrument sounds (SoundFont) on first use and processing in-app purchases. No personal data is ever transmitted.</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="en">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is Etude Pro?</div>
+      <div class="faq-a"><p>Etude Pro is an optional subscription that unlocks additional features: bookmarks, annotations, audio effects, chord tools, video import, unlimited score/audio library, and more. Core playback features are free.</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="en">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do I cancel my subscription?</div>
+      <div class="faq-a"><p>Open the Settings app on your device &gt; tap your name at the top &gt; Subscriptions &gt; select Etude &gt; Cancel Subscription. You can cancel at least 24 hours before the next renewal date.</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="en">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do I restore my purchase on a new device?</div>
+      <div class="faq-a"><p>Go to Settings tab in Etude &gt; Pro Version &gt; Restore Subscription. Make sure you are signed in with the same Apple ID used for the original purchase.</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="en">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I change pitch and tempo independently?</div>
+      <div class="faq-a"><p>Yes. For audio files, pitch and tempo are fully independent — change one without affecting the other. For score playback, tempo can be adjusted freely.</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="en">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is my data safe?</div>
+      <div class="faq-a"><p>Absolutely. All your music files and settings are stored locally on your device. We do not collect any personal data, and we do not use any analytics or tracking services. See our <a href="privacy.html" style="color:var(--purple)">Privacy Policy</a> for details.</p></div>
+    </div>
+  </section>
+
+  <!-- FAQ JA -->
+  <section id="faq-ja" data-lang="ja">
+    <h2>よくある質問</h2>
+
+    <div class="faq-item" data-lang="ja">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">対応ファイル形式は？</div>
+      <div class="faq-a"><p><strong>楽譜:</strong> MusicXML (.musicxml, .xml)、圧縮MusicXML (.mxl)、MuseScore (.mscz)、MIDI (.mid, .midi)<br><strong>音声:</strong> MP3, WAV, M4A, FLAC, OGG<br><strong>動画:</strong> MP4, MOV（音声を抽出して練習に使用）</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="ja">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">インターネット接続は必要ですか？</div>
+      <div class="faq-a"><p>いいえ。Etudeは完全オフラインで動作します。ネットワークアクセスは初回の楽器音源（SoundFont）ダウンロードとアプリ内購入の処理のみです。個人データが送信されることはありません。</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="ja">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Etude Proとは？</div>
+      <div class="faq-a"><p>Etude Proはオプションのサブスクリプションで、ブックマーク、アノテーション、オーディオエフェクト、コードツール、動画インポート、無制限ライブラリなどの追加機能をアンロックします。基本的な再生機能は無料です。</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="ja">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">サブスクリプションのキャンセル方法は？</div>
+      <div class="faq-a"><p>iPhoneの設定アプリ &gt; 上部の自分の名前をタップ &gt; サブスクリプション &gt; Etudeを選択 &gt; サブスクリプションをキャンセル。次回更新日の24時間前までにキャンセルできます。</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="ja">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">新しいデバイスで購入を復元するには？</div>
+      <div class="faq-a"><p>Etudeの設定タブ &gt; Pro版 &gt; サブスクリプションを復元。購入時と同じApple IDでサインインしていることを確認してください。</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="ja">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">ピッチとテンポを独立して変更できますか？</div>
+      <div class="faq-a"><p>はい。音声ファイルでは、ピッチとテンポを互いに影響なく独立して変更できます。楽譜再生ではテンポを自由に調整できます。</p></div>
+    </div>
+
+    <div class="faq-item" data-lang="ja">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">データは安全ですか？</div>
+      <div class="faq-a"><p>はい。すべての音楽ファイルと設定はデバイスにローカル保存されます。個人データの収集は一切行わず、分析・トラッキングサービスも使用していません。詳細は<a href="privacy.html" style="color:var(--purple)">プライバシーポリシー</a>をご覧ください。</p></div>
+    </div>
+  </section>
+
+  <!-- Contact EN -->
+  <section id="contact" data-lang="en">
+    <h2>Contact Us</h2>
+    <div class="contact-card">
+      <p>Can't find the answer you're looking for?<br>We're happy to help.</p>
+      <a href="mailto:wall.ao.dev@gmail.com">Send Email</a>
+    </div>
+  </section>
+
+  <!-- Contact JA -->
+  <section id="contact-ja" data-lang="ja">
+    <h2>お問い合わせ</h2>
+    <div class="contact-card">
+      <p>お探しの回答が見つかりませんか？<br>お気軽にお問い合わせください。</p>
+      <a href="mailto:wall.ao.dev@gmail.com">メールを送る</a>
+    </div>
+  </section>
+
+  <!-- Links EN -->
+  <section data-lang="en">
+    <h2>Legal</h2>
+    <div class="links-grid">
+      <a href="privacy.html" class="link-card">
+        <h3>Privacy Policy</h3>
+        <p>How we handle your data</p>
+      </a>
+      <a href="terms.html" class="link-card">
+        <h3>Terms of Service</h3>
+        <p>Terms of using Etude</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Links JA -->
+  <section data-lang="ja">
+    <h2>法的情報</h2>
+    <div class="links-grid">
+      <a href="privacy.html" class="link-card">
+        <h3>プライバシーポリシー</h3>
+        <p>データの取り扱いについて</p>
+      </a>
+      <a href="terms.html" class="link-card">
+        <h3>利用規約</h3>
+        <p>Etudeの利用条件</p>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    &copy; 2026 Etude. All rights reserved.
+  </div>
+</footer>
+
+<script>
+  function toggleLang() {
+    document.body.classList.toggle('ja');
+    localStorage.setItem('etude-lang', document.body.classList.contains('ja') ? 'ja' : 'en');
+  }
+
+  // Auto-detect language
+  (function() {
+    var saved = localStorage.getItem('etude-lang');
+    if (saved === 'ja' || (!saved && navigator.language.startsWith('ja'))) {
+      document.body.classList.add('ja');
+    }
+  })();
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
