@@ -1,0 +1,86 @@
+name: Notify IndexNow on push
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - '**/*.html'
+      - 'sitemap.xml'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed URLs
+        id: changes
+        run: |
+          # Find HTML files changed in this push
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- '*.html' || true)
+
+          if [ -z "$CHANGED" ]; then
+            echo "No HTML changes. Sending only home URL."
+            URLS='["https://kabe-wall.github.io/etude-support/"]'
+          else
+            URLS="["
+            FIRST=true
+            while IFS= read -r FILE; do
+              [ -z "$FILE" ] && continue
+              if [ "$FILE" = "index.html" ]; then
+                URL="https://kabe-wall.github.io/etude-support/"
+              else
+                URL="https://kabe-wall.github.io/etude-support/$FILE"
+              fi
+              if [ "$FIRST" = true ]; then
+                URLS="$URLS\"$URL\""
+                FIRST=false
+              else
+                URLS="$URLS,\"$URL\""
+              fi
+            done <<< "$CHANGED"
+            URLS="$URLS]"
+          fi
+
+          echo "urls=$URLS" >> "$GITHUB_OUTPUT"
+          echo "Changed URLs: $URLS"
+
+      - name: Submit to IndexNow
+        run: |
+          KEY="6198a846488e402885ea5d7fff392d41"
+          KEY_LOCATION="https://kabe-wall.github.io/etude-support/${KEY}.txt"
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "host": "kabe-wall.github.io",
+            "key": "$KEY",
+            "keyLocation": "$KEY_LOCATION",
+            "urlList": ${{ steps.changes.outputs.urls }}
+          }
+          EOF
+          )
+
+          echo "Payload:"
+          echo "$PAYLOAD"
+
+          # Submit to IndexNow (Bing, Yandex, Naver, DuckDuckGo all share this API)
+          RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST https://api.indexnow.org/indexnow \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d "$PAYLOAD")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP $HTTP_CODE"
+          echo "Body: $BODY"
+
+          # IndexNow returns 200 (OK) or 202 (Accepted) on success
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
+            echo "✓ IndexNow notified successfully"
+          else
+            echo "✗ IndexNow returned $HTTP_CODE"
+            exit 1
+          fi
