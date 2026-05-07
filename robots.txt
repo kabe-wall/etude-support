@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kabe-wall.github.io/etude-support/sitemap.xml

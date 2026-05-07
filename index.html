@@ -1,686 +1,1157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Etude - Sheet Music Player & Practice Tools</title>
-  <meta name="description" content="Etude is a music practice app with sheet music playback, audio tools, tuner, metronome, and chord analysis. MusicXML, MSCZ, MIDI support.">
-  <meta name="theme-color" content="#0f0f14">
-  <meta property="og:title" content="Etude - Sheet Music Player & Practice Tools">
-  <meta property="og:description" content="Everything you need for music practice. Sheet music playback, audio player, tuner, metronome, and more.">
-  <meta property="og:image" content="https://kabe-wall.github.io/etude-support/assets/hero.png">
-  <meta property="og:url" content="https://kabe-wall.github.io/etude-support/">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="assets/icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/icon.png">
-  <style>
-    :root {
-      --purple: #8746FF;
-      --purple-light: #9a5fff;
-      --purple-glow: rgba(135, 70, 255, 0.15);
-      --bg: #0f0f14;
-      --bg-alt: #0a0a0e;
-      --surface: #1a1a24;
-      --surface-hover: #222233;
-      --text: #e8e8ed;
-      --text-secondary: #7a7a8c;
-      --text-dim: #55556a;
-      --border: #2a2a38;
-      --gradient-hero: linear-gradient(180deg, #0f0f14 0%, #161622 50%, #0f0f14 100%);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<!-- ============= SEO ============= -->
+<title>Etude — 楽譜練習アプリ for iOS | .mscz / MusicXML / MIDI 再生・パート抽出・テンポ可変</title>
+<meta name="description" content="iOSの楽譜練習アプリ Etude。MuseScoreの.mscz / MusicXML / MIDI を読み込み、全パート再生、パート抽出、テンポ可変、A-Bループ、譜面への書き込み、チューナー、メトロノームまで1つに。アカペラ・合唱・吹奏楽・ピアノ・耳コピの練習に。完全オフライン、無料ダウンロード。Sheet music practice app for iOS supporting .mscz, MusicXML, MIDI.">
+<meta name="keywords" content="楽譜アプリ, musescore, mscz, MusicXML, MIDI再生, 練習アプリ, 吹奏楽, 合唱, アカペラ, ピアノ練習, ギター練習, バイオリン, フルート, パート抽出, テンポ変更, A-Bループ, チューナー, メトロノーム, 移調楽器, 耳コピ, iOS, iPad楽譜, sheet music app, music practice, MuseScore player, score reader">
+<meta name="author" content="kabe-wall">
+<link rel="canonical" href="https://kabe-wall.github.io/etude-support/">
+<link rel="alternate" hreflang="ja" href="https://kabe-wall.github.io/etude-support/">
+<link rel="alternate" hreflang="en" href="https://kabe-wall.github.io/etude-support/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://kabe-wall.github.io/etude-support/">
 
-    html { scroll-behavior: smooth; }
+<!-- ============= OPEN GRAPH ============= -->
+<meta property="og:title" content="Etude — 楽譜練習アプリ for iOS">
+<meta property="og:description" content=".mscz / MusicXML / MIDI を読み込み、全パート再生、パート抽出、テンポ可変、A-Bループ、書き込みまで。練習のすべてを、ひとつに。">
+<meta property="og:image" content="https://kabe-wall.github.io/etude-support/assets/hero.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://kabe-wall.github.io/etude-support/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Etude">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="en_US">
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-    }
+<!-- ============= TWITTER CARD ============= -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Etude — 楽譜練習アプリ for iOS">
+<meta name="twitter:description" content=".mscz / MusicXML / MIDI を読み込み、全パート再生、パート抽出、テンポ可変、A-Bループ、書き込みまで。練習のすべてを、ひとつに。">
+<meta name="twitter:image" content="https://kabe-wall.github.io/etude-support/assets/hero.png">
 
-    /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(15, 15, 20, 0.8);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(42, 42, 56, 0.5);
-    }
-    .nav-inner {
-      max-width: 1200px; margin: 0 auto; padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between; height: 60px;
-    }
-    .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none; color: var(--text); font-weight: 700; font-size: 20px;
-    }
-    .nav-logo img { width: 32px; height: 32px; border-radius: 8px; }
-    .nav-logo span { color: var(--purple); }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .lang-btn {
-      background: transparent; border: 1px solid var(--border); border-radius: 8px;
-      padding: 6px 12px; color: var(--text-secondary); font-size: 13px; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .lang-btn:hover { border-color: var(--purple); color: var(--text); }
-    .nav-cta {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--purple); color: #fff; text-decoration: none;
-      padding: 8px 18px; border-radius: 10px; font-size: 14px; font-weight: 600;
-      transition: background 0.2s;
-    }
-    .nav-cta:hover { background: var(--purple-light); }
-    .nav-cta svg { width: 16px; height: 16px; }
+<!-- ============= ICONS ============= -->
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<meta name="theme-color" content="#8b5cf6">
 
-    /* HERO */
-    .hero {
-      padding: 140px 24px 60px;
-      text-align: center;
-      background: var(--gradient-hero);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 100px;
-      padding: 6px 16px; font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;
-    }
-    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
-    .hero h1 {
-      font-size: clamp(36px, 6vw, 64px); font-weight: 800;
-      letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px;
-      text-wrap: balance;
-    }
-    .hero h1 .accent { color: var(--purple); }
-    .hero .subtitle {
-      font-size: clamp(16px, 2.5vw, 20px); color: var(--text-secondary);
-      max-width: 560px; margin: 0 auto 40px; line-height: 1.6;
-    }
-    .hero-cta-group { display: flex; justify-content: center; gap: 12px; margin-bottom: 60px; flex-wrap: wrap; }
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--purple); color: #fff; text-decoration: none;
-      padding: 14px 28px; border-radius: 14px; font-size: 16px; font-weight: 600;
-      transition: all 0.2s; border: none; cursor: pointer;
-    }
-    .btn-primary:hover { background: var(--purple-light); transform: translateY(-1px); }
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--surface); color: var(--text); text-decoration: none;
-      padding: 14px 28px; border-radius: 14px; font-size: 16px; font-weight: 600;
-      border: 1px solid var(--border); transition: all 0.2s; cursor: pointer;
-    }
-    .btn-secondary:hover { border-color: var(--purple); background: var(--surface-hover); }
-    .hero-image {
-      max-width: 480px; width: 100%; margin: 0 auto;
-      position: relative; z-index: 1;
-    }
-    .hero-image img { width: 100%; height: auto; border-radius: 20px; }
+<!-- ============= STRUCTURED DATA ============= -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "Etude - Sheet Music Player & Practice Tools",
+  "alternateName": "Etude",
+  "operatingSystem": "iOS 16.0",
+  "applicationCategory": "MusicApplication",
+  "applicationSubCategory": "Practice Tool",
+  "url": "https://kabe-wall.github.io/etude-support/",
+  "image": "https://kabe-wall.github.io/etude-support/assets/icon.png",
+  "screenshot": [
+    "https://kabe-wall.github.io/etude-support/assets/ss-playback.png",
+    "https://kabe-wall.github.io/etude-support/assets/ss-parts.png",
+    "https://kabe-wall.github.io/etude-support/assets/ss-audio.png",
+    "https://kabe-wall.github.io/etude-support/assets/ss-tuner.png",
+    "https://kabe-wall.github.io/etude-support/assets/ss-metronome.png",
+    "https://kabe-wall.github.io/etude-support/assets/ss-eq.png"
+  ],
+  "description": "iOS sheet music practice app. Loads .mscz / MusicXML / MIDI files, plays all parts with solo/mute mixer, tempo control, A-B loop, score annotation, tuner, and metronome — all in one app.",
+  "softwareVersion": "1.2.3",
+  "fileSize": "120MB",
+  "datePublished": "2026-03-01",
+  "inLanguage": ["ja", "en", "ko", "zh-CN", "zh-TW", "de", "es", "fr"],
+  "author": { "@type": "Person", "name": "kabe-wall", "url": "https://github.com/kabe-wall" },
+  "publisher": { "@type": "Person", "name": "kabe-wall" },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY",
+    "availability": "https://schema.org/InStock"
+  },
+  "featureList": [
+    "MuseScore .mscz / MusicXML / MIDI playback",
+    "Part mixer (solo / mute / volume)",
+    "Tempo control (10-200%)",
+    "A-B loop",
+    "Cursor follow",
+    "Background playback",
+    "Chromatic tuner",
+    "Metronome",
+    "Audio file playback (MP3/WAV/M4A/FLAC/OGG)",
+    "Independent pitch / tempo change",
+    "Score annotation (Apple Pencil supported)",
+    "Recording mode with real-time pitch detection",
+    "5-band parametric EQ",
+    "40+ audio effects",
+    "Chord auto-detection",
+    "Piano roll view",
+    "Video import (audio extraction)",
+    "Export (PDF / MusicXML / MIDI / MP3 / WAV)"
+  ]
+}
+</script>
 
-    /* FEATURES GRID */
-    .features {
-      padding: 100px 24px;
-      max-width: 1200px; margin: 0 auto;
-    }
-    .section-label {
-      text-transform: uppercase; font-size: 13px; font-weight: 700;
-      color: var(--purple); letter-spacing: 0.1em; margin-bottom: 12px;
-      text-align: center;
-    }
-    .section-title {
-      font-size: clamp(28px, 4vw, 44px); font-weight: 800;
-      letter-spacing: -0.02em; text-align: center; margin-bottom: 16px;
-      text-wrap: balance;
-    }
-    .section-desc {
-      color: var(--text-secondary); text-align: center;
-      max-width: 560px; margin: 0 auto 64px; font-size: 16px;
-    }
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-    .feature-card:hover { border-color: rgba(135, 70, 255, 0.4); transform: translateY(-4px); }
-    .feature-card-img {
-      width: 100%;
-      aspect-ratio: 9 / 16;
-      overflow: hidden;
-      display: flex; align-items: flex-start; justify-content: center;
-      background: var(--bg-alt);
-    }
-    .feature-card-img img {
-      width: 100%; height: 100%; object-fit: cover; object-position: top;
-    }
-    .feature-card-body { padding: 24px; }
-    .feature-card-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-    .feature-card-body p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
+<style>
+  :root {
+    --bg: #f8f8f8;
+    --surface: #ffffff;
+    --surface-variant: #f0f0f0;
+    --primary: #8b5cf6;
+    --primary-variant: #7c3aed;
+    --primary-light: #a78bfa;
+    --primary-tint: rgba(139, 92, 246, 0.10);
+    --primary-tint-strong: rgba(139, 92, 246, 0.18);
+    --text: #2f3446;
+    --text-secondary: #646f8d;
+    --text-dim: #9a9aac;
+    --border: #e0e0e0;
+    --border-soft: rgba(0,0,0,0.06);
+    --shadow-soft: 0 4px 14px rgba(0,0,0,0.06);
+    --shadow-mid: 0 8px 28px rgba(0,0,0,0.08);
+    --shadow-glow: 0 12px 40px rgba(139, 92, 246, 0.18);
+  }
 
-    /* SHOWCASE */
-    .showcase {
-      padding: 100px 24px;
-      background: var(--bg-alt);
-    }
-    .showcase-inner {
-      max-width: 1200px; margin: 0 auto;
-    }
-    .showcase-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-      margin-bottom: 100px;
-    }
-    .showcase-row:last-child { margin-bottom: 0; }
-    .showcase-row.reverse { direction: rtl; }
-    .showcase-row.reverse > * { direction: ltr; }
-    .showcase-text .label {
-      font-size: 13px; font-weight: 700; color: var(--purple);
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
-    }
-    .showcase-text h2 {
-      font-size: clamp(24px, 3vw, 36px); font-weight: 800;
-      letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2;
-    }
-    .showcase-text p { color: var(--text-secondary); font-size: 16px; line-height: 1.7; margin-bottom: 12px; }
-    .showcase-text ul {
-      list-style: none; padding: 0; margin-top: 20px;
-    }
-    .showcase-text ul li {
-      color: var(--text-secondary); font-size: 15px; padding: 6px 0;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .showcase-text ul li::before {
-      content: '';
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--purple); flex-shrink: 0;
-    }
-    .showcase-img {
-      display: flex; justify-content: center;
-    }
-    .showcase-img img {
-      max-width: 320px; width: 100%; height: auto;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Hiragino Sans', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    word-break: auto-phrase;
+    line-break: strict;
+  }
 
-    /* TOOLS */
-    .tools-strip {
-      padding: 100px 24px;
-      max-width: 1200px; margin: 0 auto;
-    }
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-    .tool-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: border-color 0.3s;
-    }
-    .tool-card:hover { border-color: rgba(135, 70, 255, 0.4); }
-    .tool-card-img {
-      width: 100%;
-      aspect-ratio: 9 / 16;
-      overflow: hidden;
-      background: var(--bg-alt);
-    }
-    .tool-card-img img {
-      width: 100%; height: 100%; object-fit: cover; object-position: top;
-    }
-    .tool-card-body { padding: 20px; }
-    .tool-card-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .tool-card-body p { color: var(--text-secondary); font-size: 13px; }
+  /* ======= LANGUAGE TOGGLE ======= */
+  /* Default: Japanese visible, English hidden */
+  [data-lang="en"] { display: none; }
+  [data-lang-i="en"] { display: none; }
+  [data-lang-i="ja"] { display: inline; }
+  /* When body.en is set: English visible, Japanese hidden */
+  body.en [data-lang="ja"] { display: none; }
+  body.en [data-lang="en"] { display: block; }
+  body.en [data-lang-i="ja"] { display: none; }
+  body.en [data-lang-i="en"] { display: inline; }
 
-    /* FORMATS */
-    .formats {
-      padding: 80px 24px;
-      text-align: center;
-      background: var(--bg-alt);
-    }
-    .format-chips {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
-      max-width: 600px; margin: 32px auto 0;
-    }
-    .format-chip {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-      padding: 10px 20px; font-size: 14px; font-weight: 600; color: var(--text);
-    }
+  /* ======= ICON SYSTEM ======= */
+  .ico { width: 24px; height: 24px; flex-shrink: 0; display: block; }
 
-    /* CTA */
-    .cta-section {
-      padding: 120px 24px;
-      text-align: center;
-      position: relative;
-    }
-    .cta-section::before {
-      content: '';
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .cta-section h2 {
-      font-size: clamp(28px, 4vw, 44px); font-weight: 800;
-      letter-spacing: -0.02em; margin-bottom: 16px;
-      position: relative; z-index: 1;
-    }
-    .cta-section p {
-      color: var(--text-secondary); font-size: 18px; margin-bottom: 40px;
-      position: relative; z-index: 1;
-    }
-    .appstore-badge {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: #000; color: #fff; text-decoration: none;
-      padding: 10px 24px 10px 18px; border-radius: 14px;
-      border: 1px solid #333;
-      transition: all 0.2s;
-      position: relative; z-index: 1;
-    }
-    .appstore-badge:hover { border-color: #555; transform: translateY(-1px); }
-    .appstore-badge svg { width: 28px; height: 28px; }
-    .appstore-badge .badge-text { text-align: left; }
-    .appstore-badge .badge-text .small { font-size: 10px; display: block; line-height: 1; opacity: 0.8; }
-    .appstore-badge .badge-text .big { font-size: 18px; font-weight: 600; display: block; line-height: 1.2; }
+  /* ======= NAV ======= */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(248, 248, 248, 0.85);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+  .nav-logo-icon { width: 36px; height: 36px; border-radius: 9px; overflow: hidden; box-shadow: var(--shadow-soft); }
+  .nav-logo-icon img { width: 100%; height: 100%; display: block; }
+  .nav-wordmark { height: 18px; width: auto; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .lang-btn {
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 18px; padding: 6px 14px;
+    color: var(--text-secondary); font-size: 12px; cursor: pointer;
+    letter-spacing: 0.3px; font-family: inherit;
+  }
+  .lang-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .nav-cta {
+    background: var(--text); color: #fff; text-decoration: none;
+    padding: 10px 20px; border-radius: 22px;
+    font-size: 14px; font-weight: 500; letter-spacing: 0.3px;
+  }
 
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 24px;
-      text-align: center;
-    }
-    .footer-inner {
-      max-width: 1200px; margin: 0 auto;
-    }
-    .footer-links {
-      display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; flex-wrap: wrap;
-    }
-    .footer-links a {
-      color: var(--text-secondary); text-decoration: none; font-size: 14px;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--purple); }
-    .footer-copy { color: var(--text-dim); font-size: 13px; }
+  /* ======= COMMON ======= */
+  section { padding: 120px 24px; max-width: 1100px; margin: 0 auto; }
+  section.full { max-width: none; padding-left: 0; padding-right: 0; }
+  section.full > .inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .section-label { text-transform: uppercase; font-size: 11px; font-weight: 600; color: var(--primary); letter-spacing: 2.5px; text-align: center; margin-bottom: 16px; }
+  .section-title { font-size: clamp(26px, 3.6vw, 38px); font-weight: 300; letter-spacing: 1.4px; line-height: 1.5; text-align: center; margin-bottom: 18px; color: var(--text); }
+  .section-title strong { font-weight: 500; color: var(--primary); }
+  .section-desc { color: var(--text-secondary); text-align: center; max-width: 580px; margin: 0 auto 64px; font-size: 15px; line-height: 1.95; letter-spacing: 0.3px; }
+  body.en .section-title { letter-spacing: -0.5px; font-weight: 400; }
 
-    /* LANG */
-    [data-lang="ja"] { display: none; }
-    body.ja [data-lang="ja"] { display: block; }
-    body.ja [data-lang="en"] { display: none; }
-    body.ja [data-lang-inline="ja"] { display: inline; }
-    body.ja [data-lang-inline="en"] { display: none; }
-    [data-lang-inline="ja"] { display: none; }
-    [data-lang-inline="en"] { display: inline; }
+  /* ======= HERO ======= */
+  .hero { padding: 140px 24px 100px; text-align: center; position: relative; overflow: hidden; }
+  .hero-glow {
+    position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-tint-strong) 0%, transparent 60%);
+    pointer-events: none;
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: translateX(-50%) scale(0.92); opacity: 0.7; }
+    50% { transform: translateX(-50%) scale(1.08); opacity: 1; }
+  }
+  .hero-icon { width: 96px; height: 96px; border-radius: 24px; margin: 0 auto 36px; box-shadow: var(--shadow-glow); position: relative; z-index: 1; overflow: hidden; }
+  .hero-icon img { width: 100%; height: 100%; display: block; }
+  .hero h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 300; letter-spacing: 1.5px; line-height: 1.5; color: var(--text); margin-bottom: 24px; position: relative; z-index: 1; }
+  .hero h1 strong { font-weight: 500; color: var(--primary); }
+  body.en .hero h1 { letter-spacing: -0.5px; font-weight: 400; }
+  .hero .subtitle { font-size: 15px; color: var(--text-secondary); max-width: 540px; margin: 0 auto 48px; line-height: 2; letter-spacing: 0.4px; position: relative; z-index: 1; }
+  .hero-cta-group { display: flex; justify-content: center; gap: 12px; margin-bottom: 60px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; text-decoration: none; padding: 16px 56px; border-radius: 28px; font-size: 15px; font-weight: 500; letter-spacing: 0.5px; box-shadow: var(--shadow-glow); transition: transform 0.2s, box-shadow 0.2s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 50px rgba(139, 92, 246, 0.28); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--text); text-decoration: none; padding: 16px 32px; border-radius: 28px; font-size: 15px; font-weight: 400; letter-spacing: 0.3px; border: 1px solid var(--border); }
+  .hero-meta { font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; margin-bottom: 60px; position: relative; z-index: 1; }
 
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      .showcase-row { grid-template-columns: 1fr; gap: 40px; }
-      .showcase-row.reverse { direction: ltr; }
-      .showcase-img { order: -1; }
-      .tools-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 600px) {
-      .hero { padding: 120px 20px 40px; }
-      .hero-cta-group { flex-direction: column; align-items: center; }
-      .tools-grid { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
-      .feature-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-      .nav-cta .btn-label { display: none; }
-    }
+  /* Hero video (phone-shaped portrait) */
+  .hero-video-wrap { max-width: 320px; width: 100%; margin: 0 auto; position: relative; z-index: 1; border-radius: 28px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.12), 0 8px 30px rgba(0,0,0,0.06); border: 1px solid var(--border-soft); background: var(--surface); }
+  .hero-video { width: 100%; height: auto; display: block; background: var(--surface-variant); }
 
-    /* SCROLL ANIMATIONS */
-    .fade-up {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-  </style>
+  /* ======= PAIN STORY ======= */
+  .pain { background: var(--surface); padding: 120px 24px; }
+  .pain-inner { max-width: 760px; margin: 0 auto; }
+  .pain-quote { font-size: clamp(24px, 3.4vw, 34px); font-weight: 300; letter-spacing: 1.2px; line-height: 1.7; color: var(--text); text-align: center; margin-bottom: 56px; }
+  body.en .pain-quote { letter-spacing: -0.3px; font-weight: 400; }
+  .pain-quote span { color: var(--primary); font-weight: 400; }
+  .pain-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
+  .pain-list li { color: var(--text-secondary); font-size: 14px; padding: 16px 0 16px 28px; position: relative; line-height: 1.85; border-top: 1px solid var(--border-soft); }
+  .pain-list li::before { content: '−'; position: absolute; left: 0; top: 16px; color: var(--text-dim); font-weight: 300; }
+
+  /* ======= PERSONAS ======= */
+  .personas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+  .persona-card { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 24px; padding: 32px 28px; }
+  .persona-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--primary-tint); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--primary); }
+  .persona-card .role { font-size: 12px; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+  .persona-card h3 { font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 14px; letter-spacing: 0.4px; line-height: 1.6; }
+  .persona-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.95; }
+  .persona-features { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+  .persona-feature { background: var(--surface-variant); padding: 4px 10px; border-radius: 8px; font-size: 11px; color: var(--text-secondary); letter-spacing: 0.3px; }
+
+  /* ======= SCREENSHOT GALLERY ======= */
+  .ss-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+  .ss-item { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 18px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; }
+  .ss-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-mid); }
+  .ss-item img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; object-position: top; display: block; background: var(--surface-variant); }
+  .ss-item figcaption { padding: 12px 14px 14px; font-size: 12px; color: var(--text-secondary); letter-spacing: 0.3px; text-align: center; }
+
+  /* ======= FEATURE DEEP DIVE ======= */
+  .feature-deep { padding: 100px 24px; max-width: 1000px; margin: 0 auto; }
+  .feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 120px; }
+  .feature-row:last-child { margin-bottom: 0; }
+  .feature-row.reverse > .feature-text { order: 2; }
+  .feature-text .label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .pro-badge { display: inline-block; background: var(--primary); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.5px; }
+  .free-badge { display: inline-block; background: var(--surface-variant); color: var(--text-secondary); font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.5px; }
+  .feature-text h3 { font-size: 26px; font-weight: 300; letter-spacing: 1px; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  body.en .feature-text h3 { letter-spacing: -0.3px; font-weight: 400; }
+  .feature-text h3 strong { font-weight: 500; color: var(--primary); }
+  .feature-text p { font-size: 14px; color: var(--text-secondary); line-height: 1.95; margin-bottom: 14px; }
+  .feature-text .can-do { background: var(--primary-tint); border-radius: 14px; padding: 18px 22px; margin-top: 20px; }
+  .feature-text .can-do strong { display: block; font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .feature-text .can-do p { font-size: 14px; color: var(--text); margin: 0; line-height: 1.85; }
+  .feature-image { border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-mid); max-width: 320px; justify-self: center; background: var(--surface); border: 1px solid var(--border-soft); }
+  .feature-image img { width: 100%; height: auto; display: block; }
+
+  /* ======= COMPACT FEATURE GRID ======= */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1100px; margin: 0 auto; }
+  .feature-card-compact { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 20px; padding: 28px 24px; position: relative; }
+  .feature-card-compact .badge-corner { position: absolute; top: 16px; right: 16px; }
+  .feature-card-compact .icon { width: 40px; height: 40px; border-radius: 12px; background: var(--primary-tint); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .feature-card-compact h4 { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 8px; letter-spacing: 0.3px; }
+  .feature-card-compact p { font-size: 13px; color: var(--text-secondary); line-height: 1.85; }
+
+  /* ======= WHY ETUDE ======= */
+  .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+  .why-card { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 24px; padding: 32px 28px; text-align: center; }
+  .why-num { font-size: 36px; font-weight: 300; color: var(--primary); letter-spacing: -1px; margin-bottom: 14px; }
+  .why-card h3 { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 12px; letter-spacing: 0.4px; line-height: 1.6; }
+  .why-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.85; }
+
+  /* ======= TRUST ======= */
+  .trust { background: var(--surface); padding: 80px 24px; }
+  .trust-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .trust-badge { text-align: center; padding: 24px 16px; }
+  .trust-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--primary-tint); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .trust-badge h4 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; letter-spacing: 0.3px; }
+  .trust-badge p { font-size: 12px; color: var(--text-secondary); line-height: 1.7; }
+
+  /* ======= PRICING ======= */
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 800px; margin: 0 auto; }
+  .pricing-card { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 24px; padding: 36px 32px; }
+  .pricing-card.featured { border-color: var(--primary); box-shadow: var(--shadow-glow); position: relative; }
+  .pricing-card.featured::before { content: 'おすすめ'; position: absolute; top: -12px; right: 24px; background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500; letter-spacing: 0.5px; }
+  body.en .pricing-card.featured::before { content: 'Recommended'; }
+  .pricing-card h3 { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 8px; letter-spacing: 0.4px; }
+  .pricing-price { font-size: 36px; font-weight: 300; color: var(--text); letter-spacing: -0.5px; margin: 12px 0 4px; }
+  .pricing-price span { font-size: 14px; color: var(--text-secondary); font-weight: 400; margin-left: 4px; }
+  .pricing-trial { font-size: 12px; color: var(--primary); margin-bottom: 24px; letter-spacing: 0.3px; }
+  .pricing-features { list-style: none; padding: 0; margin-bottom: 24px; }
+  .pricing-features li { font-size: 13px; color: var(--text-secondary); padding: 8px 0 8px 24px; position: relative; line-height: 1.7; }
+  .pricing-features li::before { content: '✓'; position: absolute; left: 0; top: 8px; color: var(--primary); font-weight: 600; }
+
+  /* ======= FAQ ======= */
+  .faq-list { max-width: 720px; margin: 0 auto; }
+  .faq-item { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 14px; margin-bottom: 12px; padding: 22px 24px; }
+  .faq-item h4 { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 10px; letter-spacing: 0.3px; }
+  .faq-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.95; }
+
+  /* ======= LANGS / FORMATS / CTA / FOOTER ======= */
+  .lang-chips, .format-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto; }
+  .lang-chip, .format-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 8px 18px; font-size: 12px; color: var(--text-secondary); letter-spacing: 0.3px; font-weight: 500; }
+  .cta-section { padding: 140px 24px; text-align: center; position: relative; background: linear-gradient(180deg, var(--bg) 0%, var(--surface-variant) 100%); }
+  .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 60%); pointer-events: none; }
+  .cta-title { font-size: clamp(26px, 3.6vw, 38px); font-weight: 300; letter-spacing: 1.4px; line-height: 1.5; margin-bottom: 18px; color: var(--text); position: relative; z-index: 1; }
+  body.en .cta-title { letter-spacing: -0.3px; font-weight: 400; }
+  .cta-title strong { font-weight: 500; color: var(--primary); }
+  .cta-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: 44px; letter-spacing: 0.4px; position: relative; z-index: 1; }
+  .appstore-badge { display: inline-flex; align-items: center; gap: 12px; background: var(--text); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 16px; box-shadow: var(--shadow-mid); position: relative; z-index: 1; }
+  .appstore-badge .small { font-size: 10px; display: block; line-height: 1.2; opacity: 0.7; letter-spacing: 0.5px; }
+  .appstore-badge .big { font-size: 18px; font-weight: 500; display: block; line-height: 1.2; letter-spacing: 0.3px; }
+  footer { border-top: 1px solid var(--border-soft); padding: 60px 24px 40px; background: var(--surface-variant); }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+  .footer-brand { display: flex; flex-direction: column; gap: 12px; }
+  .footer-brand-row { display: flex; align-items: center; gap: 12px; }
+  .footer-brand-icon { width: 36px; height: 36px; border-radius: 9px; overflow: hidden; }
+  .footer-brand-icon img { width: 100%; height: 100%; }
+  .footer-wordmark { height: 18px; }
+  .footer-brand p { font-size: 12px; color: var(--text-secondary); line-height: 1.85; }
+  .footer-col h5 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 14px; font-weight: 600; }
+  .footer-col a { display: block; color: var(--text-secondary); text-decoration: none; font-size: 13px; padding: 6px 0; letter-spacing: 0.2px; }
+  .footer-bottom { max-width: 1100px; margin: 0 auto; text-align: center; padding-top: 28px; border-top: 1px solid var(--border-soft); color: var(--text-dim); font-size: 12px; letter-spacing: 0.3px; }
+
+  /* ======= RESPONSIVE ======= */
+  @media (max-width: 800px) {
+    section { padding: 80px 20px; }
+    .hero { padding: 110px 20px 60px; }
+    .pain-list { grid-template-columns: 1fr; }
+    .personas-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .feature-row { grid-template-columns: 1fr; gap: 40px; margin-bottom: 80px; }
+    .feature-row.reverse > .feature-text { order: -1; }
+    .feature-image { order: -1; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+    .trust-inner { grid-template-columns: 1fr 1fr; }
+    .footer-inner { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 500px) { .features-grid { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
+
+<!-- ======= ICON SPRITE ======= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14a9 9 0 0 1 18 0v5a2 2 0 0 1-2 2h-1v-7h3M3 14v5a2 2 0 0 0 2 2h1v-7H3"/></symbol>
+    <symbol id="i-grad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+    <symbol id="i-piano" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 5v9M15 5v9M9 14h6"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l4 4v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M16 3v4h4M8 12h8M8 16h6"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-metro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8l-2-16h-4z"/><path d="M12 16l3-7"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V14M5 10V3M12 21V12M12 8V3M19 21V16M19 12V3M1 14h8M8 8h8M15 16h8"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2l2-7 4 14 4-10 2 6 2-3h4"/></symbol>
+    <symbol id="i-eq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V11M5 7V3M12 21V13M12 9V3M19 21V15M19 11V3"/><circle cx="5" cy="9" r="1.6"/><circle cx="12" cy="11" r="1.6"/><circle cx="19" cy="13" r="1.6"/></symbol>
+    <symbol id="i-type" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2M9 5v14M9 19h6"/></symbol>
+    <symbol id="i-export" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v7c0 5-4 8-8 9-4-1-8-4-8-9V6l8-4z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M12 19h.01"/><path d="M2 2l20 20" stroke-width="2"/></symbol>
+    <symbol id="i-horn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a3 3 0 0 0 3 3h2l8 4V5l-8 4H6a3 3 0 0 0-3 3z"/></symbol>
+  </defs>
+</svg>
 
 <nav>
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <img src="assets/icon.png" alt="Etude" width="32" height="32">
-      <span>Etude</span>
+      <span class="nav-logo-icon"><img src="assets/icon.png" alt="Etude" width="36" height="36"></span>
+      <img src="assets/wordmark.png" alt="Etude" class="nav-wordmark">
     </a>
     <div class="nav-right">
-      <button class="lang-btn" onclick="toggleLang()">
-        <span data-lang-inline="en">日本語</span>
-        <span data-lang-inline="ja">English</span>
+      <button class="lang-btn" id="langToggle">
+        <span data-lang-i="ja">English</span>
+        <span data-lang-i="en">日本語</span>
       </button>
-      <a href="https://apps.apple.com/app/etude-sheet-music-player/id6742598930" class="nav-cta">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-        <span class="btn-label" data-lang-inline="en">App Store</span>
-        <span class="btn-label" data-lang-inline="ja">App Store</span>
-      </a>
+      <a href="https://apps.apple.com/app/id6758625177" class="nav-cta">App Store</a>
     </div>
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-badge">
-    <span class="dot"></span>
-    <span data-lang-inline="en">Available on the App Store</span>
-    <span data-lang-inline="ja">App Store で配信中</span>
-  </div>
+<!-- ======= HERO ======= -->
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-icon"><img src="assets/icon.png" alt="Etude" width="96" height="96"></div>
 
-  <div data-lang="en">
-    <h1>Everything you need<br>for <span class="accent">music practice.</span></h1>
-    <p class="subtitle">Sheet music playback, audio tools, tuner, metronome, chord analysis — all in one app. Supports MusicXML, MSCZ, and MIDI.</p>
-  </div>
-  <div data-lang="ja">
-    <h1>練習のすべてが、<br><span class="accent">ここに。</span></h1>
-    <p class="subtitle">楽譜再生、音源再生、チューナー、メトロノーム、コード分析。<br>音楽練習に必要なすべてを、ひとつのアプリに。</p>
-  </div>
+  <h1 data-lang="ja">練習のすべてを、<strong>ひとつに。</strong></h1>
+  <h1 data-lang="en">All your practice, <strong>in one app.</strong></h1>
+
+  <p class="subtitle" data-lang="ja">
+    楽譜の再生、テンポ調整、A-Bループ、音源の加工、譜面への書き込み、チューナー、メトロノーム。
+    アプリを切り替えるストレスから解放されるための、ひとつのアプリ。
+  </p>
+  <p class="subtitle" data-lang="en">
+    Score playback, tempo control, A-B loop, audio processing, score annotation, tuner, metronome.
+    One app to free you from constantly switching between tools.
+  </p>
 
   <div class="hero-cta-group">
-    <a href="https://apps.apple.com/app/etude-sheet-music-player/id6742598930" class="btn-primary">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-      <span data-lang-inline="en">Download Free</span>
-      <span data-lang-inline="ja">無料ダウンロード</span>
+    <a href="https://apps.apple.com/app/id6758625177" class="btn-primary">
+      <span data-lang-i="ja">無料でダウンロード</span>
+      <span data-lang-i="en">Download Free</span>
     </a>
     <a href="#features" class="btn-secondary">
-      <span data-lang-inline="en">See Features</span>
-      <span data-lang-inline="ja">機能を見る</span>
+      <span data-lang-i="ja">機能を見る</span>
+      <span data-lang-i="en">See features</span>
     </a>
   </div>
 
-  <div class="hero-image">
-    <img data-lang="ja" src="assets/hero.png" alt="Etude app screenshots" loading="eager" width="480" height="960">
-    <img data-lang="en" src="assets/hero-en.png" alt="Etude app screenshots" loading="eager" width="480" height="960">
+  <p class="hero-meta" data-lang="ja">iPhone & iPad · iOS 16+ · アカウント不要 · 完全オフライン</p>
+  <p class="hero-meta" data-lang="en">iPhone & iPad · iOS 16+ · No account required · Fully offline</p>
+
+  <div class="hero-video-wrap">
+    <video class="hero-video" autoplay muted loop playsinline poster="assets/hero.png" aria-label="Etude app demo">
+      <source src="assets/hero-demo.mp4" type="video/mp4">
+      <img src="assets/hero.png" alt="Etude screenshots" width="320" height="693">
+    </video>
+  </div>
+</header>
+
+<!-- ======= PAIN STORY ======= -->
+<section class="pain full">
+  <div class="pain-inner">
+    <p class="pain-quote" data-lang="ja">練習中、<span>5つのアプリ</span>を行き来していた。</p>
+    <p class="pain-quote" data-lang="en">During practice, I was juggling <span>5 different apps.</span></p>
+
+    <ul class="pain-list" data-lang="ja">
+      <li>譜面はPDFビューアで見る。</li>
+      <li>音は別の再生アプリで鳴らす。</li>
+      <li>速度は変えられない。</li>
+      <li>パート抽出はできない。</li>
+      <li>巻き戻しは手動。</li>
+      <li>書き込みは別アプリ。</li>
+      <li>戻ると再生位置がリセット。</li>
+      <li>メトロノームとチューナーは別アプリ。</li>
+    </ul>
+    <ul class="pain-list" data-lang="en">
+      <li>Score in a PDF viewer.</li>
+      <li>Audio in a separate playback app.</li>
+      <li>No way to change tempo.</li>
+      <li>No way to isolate parts.</li>
+      <li>Manual rewinding every time.</li>
+      <li>Annotation needs another app.</li>
+      <li>Switching apps resets the playhead.</li>
+      <li>Metronome and tuner: yet more apps.</li>
+    </ul>
   </div>
 </section>
 
-<section class="features" id="features">
-  <div data-lang="en">
-    <p class="section-label">Features</p>
-    <h2 class="section-title">A complete practice toolkit</h2>
-    <p class="section-desc">From score playback to audio processing, Etude has everything a musician needs — without the clutter.</p>
-  </div>
-  <div data-lang="ja">
-    <p class="section-label">機能</p>
-    <h2 class="section-title">練習に必要なすべてを、ひとつに</h2>
-    <p class="section-desc">楽譜の再生から音声処理まで。音楽家のための、シンプルで強力なツール。</p>
-  </div>
+<!-- ======= PERSONAS ======= -->
+<section>
+  <p class="section-label">WHO IT'S FOR</p>
+  <h2 class="section-title" data-lang="ja">こんな練習に、<strong>静かに寄り添う。</strong></h2>
+  <h2 class="section-title" data-lang="en">A quiet companion for <strong>every kind of practice.</strong></h2>
+  <p class="section-desc" data-lang="ja">レベルもジャンルも違う、それぞれの練習スタイルに。どのケースでも、必要な機能だけが手元に揃う設計です。</p>
+  <p class="section-desc" data-lang="en">Whatever your level, whatever your genre. The right tools, always within reach.</p>
 
-  <div class="feature-grid">
-    <div class="feature-card fade-up">
-      <div class="feature-card-img">
-        <img data-lang="ja" src="assets/ss-library.png" alt="Score Library" loading="lazy" width="390" height="844">
-        <img data-lang="en" src="assets/ss-library-en.png" alt="Score Library" loading="lazy" width="390" height="844">
-      </div>
-      <div class="feature-card-body">
-        <div data-lang="en"><h3>Score Library</h3><p>Import and organize your sheet music. Support for groups, favorites, and quick search.</p></div>
-        <div data-lang="ja"><h3>楽譜ライブラリ</h3><p>楽譜をインポートして整理。グループ分け、お気に入り、クイック検索に対応。</p></div>
-      </div>
-    </div>
-    <div class="feature-card fade-up">
-      <div class="feature-card-img">
-        <img data-lang="ja" src="assets/ss-playback.png" alt="Score Playback" loading="lazy" width="390" height="844">
-        <img data-lang="en" src="assets/ss-playback-en.png" alt="Score Playback" loading="lazy" width="390" height="844">
-      </div>
-      <div class="feature-card-body">
-        <div data-lang="en"><h3>Smart Playback</h3><p>Real-time cursor follows the music. Adjust tempo, loop sections, and switch instruments.</p></div>
-        <div data-lang="ja"><h3>スマート再生</h3><p>カーソルがリアルタイムで音楽を追いかける。テンポ変更、区間ループ、楽器変更も。</p></div>
+  <div class="personas-grid">
+
+    <div class="persona-card">
+      <div class="persona-icon"><svg class="ico"><use href="#i-piano"/></svg></div>
+      <p class="role" data-lang="ja">初心者・趣味のピアノ</p>
+      <p class="role" data-lang="en">Beginner / Hobby Pianist</p>
+      <h3 data-lang="ja">テンポを落として、ゆっくり始めたい</h3>
+      <h3 data-lang="en">Slow it down. Start gently.</h3>
+      <p data-lang="ja">原曲のテンポでは追いつけないフレーズも、50%まで落として聴けば耳と指が追いつきます。音名表示で読譜の不安を補いながら、苦手な4小節をループで体に入れていきます。</p>
+      <p data-lang="en">Bring fast passages down to 50% and let your ears and fingers catch up. Note name overlays support sight reading, and A-B loop drills the four bars you can't quite play.</p>
+      <div class="persona-features">
+        <span class="persona-feature" data-lang-i="ja">テンポ可変</span><span class="persona-feature" data-lang-i="en">Tempo</span>
+        <span class="persona-feature" data-lang-i="ja">A-Bループ</span><span class="persona-feature" data-lang-i="en">A-B Loop</span>
+        <span class="persona-feature" data-lang-i="ja">音名表示</span><span class="persona-feature" data-lang-i="en">Note Names</span>
+        <span class="persona-feature" data-lang-i="ja">カーソル追従</span><span class="persona-feature" data-lang-i="en">Cursor Follow</span>
       </div>
     </div>
-    <div class="feature-card fade-up">
-      <div class="feature-card-img">
-        <img data-lang="ja" src="assets/ss-parts.png" alt="Part Mixer" loading="lazy" width="390" height="844">
-        <img data-lang="en" src="assets/ss-parts-en.png" alt="Part Mixer" loading="lazy" width="390" height="844">
+
+    <div class="persona-card">
+      <div class="persona-icon"><svg class="ico"><use href="#i-mic"/></svg></div>
+      <p class="role" data-lang="ja">アカペラ・合唱</p>
+      <p class="role" data-lang="en">A Cappella / Choir</p>
+      <h3 data-lang="ja">自分の声部だけを抽出して、暗譜したい</h3>
+      <h3 data-lang="en">Isolate your part and memorize it.</h3>
+      <p data-lang="ja">SATBの譜面を開いて、自分以外のパートをミュート。バックグラウンド再生に対応しているので、家事をしながらでも自分のパートを耳に染み込ませる練習ができます。</p>
+      <p data-lang="en">Open an SATB score, mute every part but yours. Background playback keeps it running while you cook, walk, or stretch — your part settles into your ear naturally.</p>
+      <div class="persona-features">
+        <span class="persona-feature" data-lang-i="ja">パートミキサー</span><span class="persona-feature" data-lang-i="en">Part Mixer</span>
+        <span class="persona-feature" data-lang-i="ja">バックグラウンド再生</span><span class="persona-feature" data-lang-i="en">Background Play</span>
+        <span class="persona-feature" data-lang-i="ja">A-Bループ</span><span class="persona-feature" data-lang-i="en">A-B Loop</span>
       </div>
-      <div class="feature-card-body">
-        <div data-lang="en"><h3>Part Mixer</h3><p>Solo, mute, and adjust volume for each part. Perfect for ensemble practice.</p></div>
-        <div data-lang="ja"><h3>パートミキサー</h3><p>各パートのソロ・ミュート・音量調整。アンサンブル練習に最適。</p></div>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-icon"><svg class="ico"><use href="#i-horn"/></svg></div>
+      <p class="role" data-lang="ja">吹奏楽部・ベテラン</p>
+      <p class="role" data-lang="en">Wind Ensemble / Experienced</p>
+      <h3 data-lang="ja">合奏イメージのまま、個人練を仕上げたい</h3>
+      <h3 data-lang="en">Practice solo, in the ensemble's voice.</h3>
+      <p data-lang="ja">Bb / Eb / F の移調楽器の譜面もそのまま読み込めます。全パートを鳴らしながら自分のパートを強調、メトロノームを併用して合奏前の最終確認を仕上げます。</p>
+      <p data-lang="en">Bb / Eb / F transposing scores load as-is. Boost your part within the full mix, lock in with the built-in metronome, and walk into rehearsal ready.</p>
+      <div class="persona-features">
+        <span class="persona-feature" data-lang-i="ja">移調楽器対応</span><span class="persona-feature" data-lang-i="en">Transposition</span>
+        <span class="persona-feature" data-lang-i="ja">パートミキサー</span><span class="persona-feature" data-lang-i="en">Part Mixer</span>
+        <span class="persona-feature" data-lang-i="ja">メトロノーム</span><span class="persona-feature" data-lang-i="en">Metronome</span>
+        <span class="persona-feature" data-lang-i="ja">チューナー</span><span class="persona-feature" data-lang-i="en">Tuner</span>
       </div>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-icon"><svg class="ico"><use href="#i-headphones"/></svg></div>
+      <p class="role" data-lang="ja">耳コピ・DTM志向</p>
+      <p class="role" data-lang="en">Transcribers / Bedroom Producers</p>
+      <h3 data-lang="ja">音源を加工しながら、譜面に起こしたい</h3>
+      <h3 data-lang="en">Manipulate audio. Transcribe.</h3>
+      <p data-lang="ja">手持ちのMP3やWAVを取り込んで、ピッチとテンポを独立して変更。早すぎるソロは速度を落とし、必要なパートだけトリムで切り出して、コードを自動検出しながら採譜を進めます。</p>
+      <p data-lang="en">Import MP3 or WAV. Change pitch without changing tempo, slow fast solos, trim the parts you need, and let chord auto-detection guide your transcription.</p>
+      <div class="persona-features">
+        <span class="persona-feature" data-lang-i="ja">音声ピッチ変更</span><span class="persona-feature" data-lang-i="en">Pitch Shift</span>
+        <span class="persona-feature" data-lang-i="ja">音声テンポ変更</span><span class="persona-feature" data-lang-i="en">Time Stretch</span>
+        <span class="persona-feature" data-lang-i="ja">トリム</span><span class="persona-feature" data-lang-i="en">Trim</span>
+        <span class="persona-feature" data-lang-i="ja">コード自動検出</span><span class="persona-feature" data-lang-i="en">Chord Detect</span>
+      </div>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-icon"><svg class="ico"><use href="#i-grad"/></svg></div>
+      <p class="role" data-lang="ja">レッスン受講者</p>
+      <p class="role" data-lang="en">Lesson Students</p>
+      <h3 data-lang="ja">先生の演奏動画を、自分のテンポで学びたい</h3>
+      <h3 data-lang="en">Learn from your teacher's video, at your own pace.</h3>
+      <p data-lang="ja">録画したレッスン動画から音声を抽出してEtudeに取り込み。スロー再生でフレージングを確認しながら、譜面に書き込みでメモを残す。繰り返し再生で、先生のニュアンスを身体に入れていきます。</p>
+      <p data-lang="en">Extract audio from your recorded lesson, drop it into Etude, slow it down, and annotate the score with what your teacher said. Loop it until the nuance lives in your body.</p>
+      <div class="persona-features">
+        <span class="persona-feature" data-lang-i="ja">動画インポート</span><span class="persona-feature" data-lang-i="en">Video Import</span>
+        <span class="persona-feature" data-lang-i="ja">音声テンポ変更</span><span class="persona-feature" data-lang-i="en">Time Stretch</span>
+        <span class="persona-feature" data-lang-i="ja">A-Bループ</span><span class="persona-feature" data-lang-i="en">A-B Loop</span>
+        <span class="persona-feature" data-lang-i="ja">書き込み</span><span class="persona-feature" data-lang-i="en">Annotation</span>
+      </div>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-icon"><svg class="ico"><use href="#i-sheet"/></svg></div>
+      <p class="role" data-lang="ja">クラシック演奏家</p>
+      <p class="role" data-lang="en">Classical Performer</p>
+      <h3 data-lang="ja">細部まで作り込んで、本番に持っていきたい</h3>
+      <h3 data-lang="en">Polish every detail. Walk on stage ready.</h3>
+      <p data-lang="ja">譜面表示を細かく調整して読みやすく整え、書き込みで運指やフレージングを記入。エフェクトとEQで自分の録音を整え、ピアノロールで音符の重なりを俯瞰しながら解釈を深めます。</p>
+      <p data-lang="en">Tune the score layout to your eye. Annotate fingering and phrasing. Shape your own recording with effects and EQ. Use piano roll to see how voices interlock.</p>
+      <div class="persona-features">
+        <span class="persona-feature" data-lang-i="ja">譜面表示調整</span><span class="persona-feature" data-lang-i="en">Layout Tuning</span>
+        <span class="persona-feature" data-lang-i="ja">書き込み</span><span class="persona-feature" data-lang-i="en">Annotation</span>
+        <span class="persona-feature" data-lang-i="ja">録音モード</span><span class="persona-feature" data-lang-i="en">Recording</span>
+        <span class="persona-feature" data-lang-i="ja">ピアノロール</span><span class="persona-feature" data-lang-i="en">Piano Roll</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======= FEATURE DEEP DIVE ======= -->
+<section class="feature-deep" id="features">
+
+  <article class="feature-row">
+    <div class="feature-text">
+      <p class="label">SCORE PLAYBACK <span class="free-badge">FREE</span></p>
+      <h3 data-lang="ja">譜面を開けば、<strong>そのまま音になる。</strong></h3>
+      <h3 data-lang="en">Open a score. <strong>It plays.</strong></h3>
+      <div data-lang="ja">
+        <p>.mscz / MusicXML / MIDI を Files から直接読み込み。MuseScoreからのエクスポート不要、形式変換も不要です。</p>
+        <p>譜面を開いた瞬間に全パートが鳴り、再生位置にカーソルがリアルタイムで追従します。128種類のGM音源で、各パートに楽器を割り当てて聴くこともできます。</p>
+      </div>
+      <div data-lang="en">
+        <p>Open .mscz / MusicXML / MIDI directly from Files. No MuseScore export, no format conversion required.</p>
+        <p>The moment you open a score, every part starts to sound. A cursor follows the playhead in real time. Switch instruments freely from 128 GM tones.</p>
+      </div>
+      <div class="can-do">
+        <strong data-lang-i="ja">これでできること</strong><strong data-lang-i="en">What this enables</strong>
+        <p data-lang="ja">譜面を渡された日に、全パートが鳴った状態の音をすぐに聴けます。まずEtudeで開いて全体像を掴むという練習ルーティンが作れます。</p>
+        <p data-lang="en">Hear the full ensemble the moment you receive a score. A new ritual: open in Etude first, grasp the whole, then drill the parts.</p>
+      </div>
+    </div>
+    <div class="feature-image"><img src="assets/ss-playback.png" alt="Score playback screen" loading="lazy"></div>
+  </article>
+
+  <article class="feature-row reverse">
+    <div class="feature-text">
+      <p class="label">PART MIXER <span class="free-badge">FREE</span></p>
+      <h3 data-lang="ja">聴きたいパートだけ、<strong>静かに残す。</strong></h3>
+      <h3 data-lang="en">Keep only the parts <strong>you need to hear.</strong></h3>
+      <div data-lang="ja">
+        <p>各パートのソロ・ミュート・音量を個別に調整できます。合唱のSATB、吹奏楽の各セクション、ピアノの両手など、譜面の構造に応じて自由に組み替えられます。</p>
+        <p>自分のパートをミュートして他を聴く。逆に自分のパートだけソロにして練習する。他のパートだけ小さく鳴らして自分が前に出る感覚を作る。</p>
+      </div>
+      <div data-lang="en">
+        <p>Solo, mute, and adjust volume per part. Choir SATB, wind ensemble sections, piano left and right hands — reconfigure freely to match the score.</p>
+        <p>Mute your own part to listen. Solo your part to drill. Lower the others to feel yourself stepping forward.</p>
+      </div>
+      <div class="can-do">
+        <strong data-lang-i="ja">これでできること</strong><strong data-lang-i="en">What this enables</strong>
+        <p data-lang="ja">合唱パート練のために、他の声部だけ残してピアノ伴奏のように鳴らせます。メンバーが集まれない日でも、家で合奏しているような感覚で個人練ができます。</p>
+        <p data-lang="en">For choir part practice, leave the other voices running like a piano accompaniment. Even when the group can't meet, your home practice feels like rehearsal.</p>
+      </div>
+    </div>
+    <div class="feature-image"><img src="assets/ss-parts.png" alt="Part mixer screen" loading="lazy"></div>
+  </article>
+
+  <article class="feature-row">
+    <div class="feature-text">
+      <p class="label">TEMPO + A-B LOOP <span class="free-badge">FREE</span></p>
+      <h3 data-lang="ja">苦手な4小節を、<strong>納得するまで繰り返す。</strong></h3>
+      <h3 data-lang="en">Drill those four bars <strong>until they're yours.</strong></h3>
+      <div data-lang="ja">
+        <p>テンポは10〜200%の間で自由に変更できます。50%から始めて慣れたら70%、90%と段階的に上げる練習法に対応します。</p>
+        <p>譜面上にA点とB点を指定すると、その範囲だけがループ再生されます。テンポを落としたまま回数を重ねれば、フレーズが自然に体に入っていきます。</p>
+      </div>
+      <div data-lang="en">
+        <p>Tempo flexes freely between 10% and 200%. Start at 50%, climb to 70%, then 90% — the classic graduated approach, fully supported.</p>
+        <p>Drop A and B points on the score, and that span loops on its own. Slow tempo plus repetition makes the phrase yours.</p>
+      </div>
+      <div class="can-do">
+        <strong data-lang-i="ja">これでできること</strong><strong data-lang-i="en">What this enables</strong>
+        <p data-lang="ja">ここの音程が難しいと感じた4小節を、テンポ60%で20回繰り返す。そんな集中練習が、ボタン2つで始められます。</p>
+        <p data-lang="en">Loop the four hardest bars at 60% twenty times. That deep, focused practice is two taps away.</p>
+      </div>
+    </div>
+    <div class="feature-image"><img src="assets/ss-pianoroll.png" alt="Tempo and loop view" loading="lazy"></div>
+  </article>
+
+  <article class="feature-row reverse">
+    <div class="feature-text">
+      <p class="label">BACKGROUND PLAYBACK <span class="free-badge">FREE</span></p>
+      <h3 data-lang="ja">切り替えても、<strong>再生は止まらない。</strong></h3>
+      <h3 data-lang="en">Switch apps. <strong>The music keeps going.</strong></h3>
+      <div data-lang="ja">
+        <p>画面をロックしても、別のアプリに切り替えても、Etudeの再生は止まりません。戻ってきたとき、リロード待ちはありません。</p>
+        <p>譜面を再生しながら別アプリでメモを取る。ロック画面で再生を続けながらストレッチをする。そんな自然な使い方ができます。</p>
+      </div>
+      <div data-lang="en">
+        <p>Lock the screen. Switch apps. Etude keeps playing. When you return, no reload, no waiting.</p>
+        <p>Take notes in another app while the score plays. Stretch while it loops on the lock screen. Practice the way you actually live.</p>
+      </div>
+      <div class="can-do">
+        <strong data-lang-i="ja">これでできること</strong><strong data-lang-i="en">What this enables</strong>
+        <p data-lang="ja">集中しているフローを、アプリ切り替えのリロードで途切れさせない。地味ですが本質的な体験差が生まれます。</p>
+        <p data-lang="en">Keep your focus intact. Reloads no longer break the flow. A small change with real, daily impact.</p>
+      </div>
+    </div>
+    <div class="feature-image"><img src="assets/ss-library.png" alt="Library screen with background playback" loading="lazy"></div>
+  </article>
+
+  <article class="feature-row">
+    <div class="feature-text">
+      <p class="label">AUDIO PLAYER <span class="free-badge">FREE</span></p>
+      <h3 data-lang="ja">音源のピッチとテンポを、<strong>独立して変える。</strong></h3>
+      <h3 data-lang="en">Pitch and tempo, <strong>controlled independently.</strong></h3>
+      <div data-lang="ja">
+        <p>MP3 / WAV / M4A / FLAC / OGG など主要なフォーマットを読み込めます。ピッチを変えずにテンポだけスローに、テンポを変えずにキーを上げ下げ、両方を独立して制御できます。</p>
+        <p>波形を見ながらピンチで拡大、A-Bループでフレーズ反復、トリム機能で必要な部分だけ切り出し。参考音源を練習素材に加工するための機能が揃っています。</p>
+      </div>
+      <div data-lang="en">
+        <p>Loads MP3 / WAV / M4A / FLAC / OGG. Slow the tempo without changing pitch. Transpose without changing speed. Both, independently.</p>
+        <p>Pinch to zoom on the waveform. A-B loop a phrase. Trim out the bit you need. Turn any reference recording into a practice asset.</p>
+      </div>
+      <div class="can-do">
+        <strong data-lang-i="ja">これでできること</strong><strong data-lang-i="en">What this enables</strong>
+        <p data-lang="ja">速いギターソロをキーそのままで70%にスローダウン、難所だけトリムでループ。市販音源を完全な耳コピ素材に変えられます。</p>
+        <p data-lang="en">Slow a fast guitar solo to 70% in the original key. Trim the hard bars and loop them. Any commercial track becomes a transcription resource.</p>
+      </div>
+    </div>
+    <div class="feature-image"><img src="assets/ss-audio.png" alt="Audio player with waveform" loading="lazy"></div>
+  </article>
+
+  <article class="feature-row reverse">
+    <div class="feature-text">
+      <p class="label">VIDEO IMPORT <span class="pro-badge">PRO</span></p>
+      <h3 data-lang="ja">レッスン動画から、<strong>音だけ取り出して練習。</strong></h3>
+      <h3 data-lang="en">Pull audio from your lesson videos.</h3>
+      <div data-lang="ja">
+        <p>手持ちのMP4 / MOV動画を取り込むと、音声だけが抽出されてオーディオプレーヤーで使えます。録画したレッスン、参考演奏の動画、教材映像など、動画形式のソースをそのまま練習素材に変換できます。</p>
+        <p>抽出した音声には、ピッチ変更・テンポ変更・A-Bループ・エフェクトなど、すべての加工機能を適用できます。</p>
+      </div>
+      <div data-lang="en">
+        <p>Drop in an MP4 / MOV file. Etude extracts the audio and opens it in the player. Lesson recordings, reference performances, course videos — turn any video into practice material.</p>
+        <p>Once extracted, the audio gets the full toolkit: pitch shift, tempo, A-B loop, effects.</p>
+      </div>
+      <div class="can-do">
+        <strong data-lang-i="ja">これでできること</strong><strong data-lang-i="en">What this enables</strong>
+        <p data-lang="ja">先生から送られてきたレッスン動画を、自分のテンポで何度も繰り返して聴き直せます。動画を見るアプリと音を加工するアプリを行き来する手間が消えます。</p>
+        <p data-lang="en">Re-listen to your teacher's recording at your own pace, as many times as you need. No more bouncing between a video player and an audio editor.</p>
+      </div>
+    </div>
+    <div class="feature-image"><img src="assets/ss-export.png" alt="Video import screen" loading="lazy"></div>
+  </article>
+
+</section>
+
+<!-- ======= SCREENSHOTS GALLERY ======= -->
+<section>
+  <p class="section-label">SCREENSHOTS</p>
+  <h2 class="section-title" data-lang="ja">実際の<strong>画面を見る。</strong></h2>
+  <h2 class="section-title" data-lang="en">See the <strong>real screens.</strong></h2>
+  <p class="section-desc" data-lang="ja">主要な画面のスクリーンショットを並べました。アプリ全体の雰囲気を、実物でご確認ください。</p>
+  <p class="section-desc" data-lang="en">A walk through the main screens. The look and feel of the app, as it actually is.</p>
+
+  <div class="ss-gallery">
+    <figure class="ss-item"><img src="assets/ss-playback.png" alt="Score playback" loading="lazy"><figcaption><span data-lang-i="ja">楽譜再生</span><span data-lang-i="en">Score Playback</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-parts.png" alt="Part mixer" loading="lazy"><figcaption><span data-lang-i="ja">パートミキサー</span><span data-lang-i="en">Part Mixer</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-audio.png" alt="Audio player" loading="lazy"><figcaption><span data-lang-i="ja">オーディオプレーヤー</span><span data-lang-i="en">Audio Player</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-tuner.png" alt="Tuner" loading="lazy"><figcaption><span data-lang-i="ja">チューナー</span><span data-lang-i="en">Tuner</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-metronome.png" alt="Metronome" loading="lazy"><figcaption><span data-lang-i="ja">メトロノーム</span><span data-lang-i="en">Metronome</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-eq.png" alt="Parametric EQ" loading="lazy"><figcaption><span data-lang-i="ja">パラメトリックEQ</span><span data-lang-i="en">Parametric EQ</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-pianoroll.png" alt="Piano roll" loading="lazy"><figcaption><span data-lang-i="ja">ピアノロール</span><span data-lang-i="en">Piano Roll</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-markup.png" alt="Annotation" loading="lazy"><figcaption><span data-lang-i="ja">書き込み</span><span data-lang-i="en">Annotation</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-chords.png" alt="Chord auto-detection" loading="lazy"><figcaption><span data-lang-i="ja">コード自動検出</span><span data-lang-i="en">Chord Detection</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-notenames.png" alt="Note names overlay" loading="lazy"><figcaption><span data-lang-i="ja">音名表示</span><span data-lang-i="en">Note Names</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-library.png" alt="Library" loading="lazy"><figcaption><span data-lang-i="ja">ライブラリ</span><span data-lang-i="en">Library</span></figcaption></figure>
+    <figure class="ss-item"><img src="assets/ss-export.png" alt="Export" loading="lazy"><figcaption><span data-lang-i="ja">エクスポート</span><span data-lang-i="en">Export</span></figcaption></figure>
+  </div>
+</section>
+
+<!-- ======= MORE FEATURES GRID ======= -->
+<section>
+  <p class="section-label">MORE FEATURES</p>
+  <h2 class="section-title" data-lang="ja">他にも、<strong>練習を助ける道具がそろっています。</strong></h2>
+  <h2 class="section-title" data-lang="en">Plus, <strong>everything else you need.</strong></h2>
+  <p class="section-desc" data-lang="ja">毎日の練習であったら助かるを、ひとつずつ形にしてきました。一部はEtude Proの機能として提供しています。</p>
+  <p class="section-desc" data-lang="en">Built one by one, for the daily-practice problems we kept hitting. Some are part of Etude Pro.</p>
+
+  <div class="features-grid">
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="free-badge">FREE</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-target"/></svg></div>
+      <h4 data-lang="ja">クロマティックチューナー</h4><h4 data-lang="en">Chromatic Tuner</h4>
+      <p data-lang="ja">ギター・ベース・バイオリンなどのプリセット付き。基準音A4のカスタマイズや移調楽器にも対応します。</p>
+      <p data-lang="en">Presets for guitar, bass, violin, and more. Customize the A4 reference. Transposing instruments supported.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="free-badge">FREE</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-metro"/></svg></div>
+      <h4 data-lang="ja">メトロノーム</h4><h4 data-lang="en">Metronome</h4>
+      <p data-lang="ja">変拍子、スウィング、サイレント練習モードに対応。タップテンポや拍ごとのアクセント設定も可能です。</p>
+      <p data-lang="en">Odd meters, swing, silent mode. Tap tempo and per-beat accents.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="free-badge">FREE</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-sliders"/></svg></div>
+      <h4 data-lang="ja">譜面表示の細部調整</h4><h4 data-lang="en">Score Layout Tuning</h4>
+      <p data-lang="ja">ページ表示、小節幅、五線譜の間隔、段間距離、音符間隔まで細かく調整できます。</p>
+      <p data-lang="en">Fine-tune page mode, measure width, staff spacing, system spacing, and note spacing.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-pencil"/></svg></div>
+      <h4 data-lang="ja">譜面への書き込み</h4><h4 data-lang="en">Score Annotation</h4>
+      <p data-lang="ja">Apple Pencilまたは指で、運指やブレスを譜面に直接書き込み。次に開いたときも書き込みは残ります。</p>
+      <p data-lang="en">Write fingerings, breath marks, anything — Apple Pencil or finger. Annotations persist between sessions.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-mic"/></svg></div>
+      <h4 data-lang="ja">録音モード</h4><h4 data-lang="en">Recording Mode</h4>
+      <p data-lang="ja">再生しながら自分の演奏を録音。リアルタイムでピッチを可視化して、音程の精度を確認できます。</p>
+      <p data-lang="en">Record yourself while the score plays. Real-time pitch visualization helps you check intonation.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-eq"/></svg></div>
+      <h4 data-lang="ja">5バンドパラメトリックEQ</h4><h4 data-lang="en">5-band Parametric EQ</h4>
+      <p data-lang="ja">音源の周波数バランスを細かく調整。練習用に低音や中音域を強調する、不要なノイズを削るなど自在に。</p>
+      <p data-lang="en">Shape the frequency balance. Emphasize bass or mids for practice. Trim unwanted noise.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-wave"/></svg></div>
+      <h4 data-lang="ja">40種以上のエフェクト</h4><h4 data-lang="en">40+ Audio Effects</h4>
+      <p data-lang="ja">リバーブ、ディレイ、コーラス、トレモロ、コンプレッサー、リミッター、ノーマライズなど。ジャンル別プリセットも豊富。</p>
+      <p data-lang="en">Reverb, delay, chorus, tremolo, compressor, limiter, normalize — and more. Genre-based presets included.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-music"/></svg></div>
+      <h4 data-lang="ja">コード自動検出</h4><h4 data-lang="en">Chord Auto-Detection</h4>
+      <p data-lang="ja">譜面を解析してコードを自動で表示。ダイアトニックコードや代理コードの一覧表示にも対応します。</p>
+      <p data-lang="en">Analyze the score and surface chords automatically. Diatonic and substitute chord listings supported.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-piano"/></svg></div>
+      <h4 data-lang="ja">ピアノロール表示</h4><h4 data-lang="en">Piano Roll View</h4>
+      <p data-lang="ja">譜面をピアノロール形式で表示。全パートを色分けされたバーで俯瞰でき、再生に同期します。</p>
+      <p data-lang="en">View the score as a piano roll. Color-coded bars across parts, synced to playback.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-type"/></svg></div>
+      <h4 data-lang="ja">音名オーバーレイ</h4><h4 data-lang="en">Note Name Overlay</h4>
+      <p data-lang="ja">音符の上に音名を重ねて表示。読譜が苦手な方や初学者の練習補助として使えます。</p>
+      <p data-lang="en">Overlay note names on the staff. A reading aid for newcomers.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-export"/></svg></div>
+      <h4 data-lang="ja">エクスポート</h4><h4 data-lang="en">Export</h4>
+      <p data-lang="ja">加工した音声をMP3 / WAVで書き出し。譜面はPDF / MusicXML / MIDI / MXLに変換して書き出せます。</p>
+      <p data-lang="en">Export processed audio as MP3 or WAV. Export scores as PDF, MusicXML, MIDI, or MXL.</p>
+    </div>
+
+    <div class="feature-card-compact">
+      <div class="badge-corner"><span class="pro-badge">PRO</span></div>
+      <div class="icon"><svg class="ico"><use href="#i-folder"/></svg></div>
+      <h4 data-lang="ja">ライブラリ整理</h4><h4 data-lang="en">Library Organization</h4>
+      <p data-lang="ja">グループ管理で楽譜・音声ファイルを分類。無制限にインポートできて、検索やお気に入り機能も使えます。</p>
+      <p data-lang="en">Group scores and audio files. Unlimited imports, search, and favorites.</p>
     </div>
   </div>
 </section>
 
-<section class="showcase">
-  <div class="showcase-inner">
-    <div class="showcase-row fade-up">
-      <div class="showcase-img">
-        <img data-lang="ja" src="assets/ss-audio.png" alt="Audio Player" loading="lazy" width="320" height="693">
-        <img data-lang="en" src="assets/ss-audio-en.png" alt="Audio Player" loading="lazy" width="320" height="693">
-      </div>
-      <div class="showcase-text">
-        <div data-lang="en">
-          <p class="label">Audio Player</p>
-          <h2>Process audio freely</h2>
-          <p>Import MP3, WAV, M4A files and adjust pitch and tempo independently. Slow down a fast passage without changing the key, or transpose without affecting the speed.</p>
-          <ul>
-            <li>Pitch shift: -12 to +12 semitones</li>
-            <li>Tempo change: 50% to 150%</li>
-            <li>A-B loop for section repeat</li>
-            <li>Stereo waveform display</li>
-            <li>Export processed audio as MP3</li>
-          </ul>
-        </div>
-        <div data-lang="ja">
-          <p class="label">オーディオプレーヤー</p>
-          <h2>音声を自由に加工</h2>
-          <p>MP3、WAV、M4Aをインポートし、ピッチとテンポを独立して調整。速いフレーズをキーを変えずにスロー再生、ピッチだけ変更も可能。</p>
-          <ul>
-            <li>ピッチ変更: -12 〜 +12 半音</li>
-            <li>テンポ変更: 50% 〜 150%</li>
-            <li>A-Bループで区間リピート</li>
-            <li>ステレオ波形表示</li>
-            <li>加工済み音声をMP3でエクスポート</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="showcase-row reverse fade-up">
-      <div class="showcase-img">
-        <img data-lang="ja" src="assets/ss-pianoroll.png" alt="Piano Roll" loading="lazy" width="320" height="693">
-        <img data-lang="en" src="assets/ss-pianoroll-en.png" alt="Piano Roll" loading="lazy" width="320" height="693">
-      </div>
-      <div class="showcase-text">
-        <div data-lang="en">
-          <p class="label">Piano Roll</p>
-          <h2>See every note at a glance</h2>
-          <p>The piano roll view shows all parts as color-coded blocks. Tap any note to hear it. Available in both portrait and full-screen landscape modes.</p>
-        </div>
-        <div data-lang="ja">
-          <p class="label">ピアノロール</p>
-          <h2>全パートを一目で俯瞰</h2>
-          <p>ピアノロール表示で全パートをカラーブロックで表示。音符をタップして試聴。縦画面・横画面フルスクリーンに対応。</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<section class="tools-strip">
-  <div data-lang="en">
-    <p class="section-label">Practice Tools</p>
-    <h2 class="section-title">Built-in tools for every musician</h2>
-    <p class="section-desc">Tuner, metronome, chord tools, and more — all designed for daily practice.</p>
-  </div>
-  <div data-lang="ja">
-    <p class="section-label">練習ツール</p>
-    <h2 class="section-title">演奏家のための内蔵ツール</h2>
-    <p class="section-desc">チューナー、メトロノーム、コードツール。毎日の練習をサポート。</p>
-  </div>
-
-  <div class="tools-grid">
-    <div class="tool-card fade-up">
-      <div class="tool-card-img">
-        <img data-lang="ja" src="assets/ss-tuner.png" alt="Tuner" loading="lazy" width="390" height="844">
-        <img data-lang="en" src="assets/ss-tuner-en.png" alt="Tuner" loading="lazy" width="390" height="844">
-      </div>
-      <div class="tool-card-body">
-        <div data-lang="en"><h3>Chromatic Tuner</h3><p>Real-time pitch detection with tone generator. Customizable A4 reference.</p></div>
-        <div data-lang="ja"><h3>クロマチックチューナー</h3><p>リアルタイムピッチ検出とトーンジェネレーター。A4基準音のカスタマイズ可能。</p></div>
-      </div>
-    </div>
-    <div class="tool-card fade-up">
-      <div class="tool-card-img">
-        <img data-lang="ja" src="assets/ss-metronome.png" alt="Metronome" loading="lazy" width="390" height="844">
-        <img data-lang="en" src="assets/ss-metronome-en.png" alt="Metronome" loading="lazy" width="390" height="844">
-      </div>
-      <div class="tool-card-body">
-        <div data-lang="en"><h3>Metronome</h3><p>Tap tempo, time signatures, subdivisions, and per-beat accent control.</p></div>
-        <div data-lang="ja"><h3>メトロノーム</h3><p>タップテンポ、拍子、サブディビジョン、拍ごとのアクセント設定。</p></div>
-      </div>
-    </div>
-    <div class="tool-card fade-up">
-      <div class="tool-card-img">
-        <img data-lang="ja" src="assets/ss-chords.png" alt="Chord Identifier" loading="lazy" width="390" height="844">
-        <img data-lang="en" src="assets/ss-chords-en.png" alt="Chord Identifier" loading="lazy" width="390" height="844">
-      </div>
-      <div class="tool-card-body">
-        <div data-lang="en"><h3>Chord Tools</h3><p>Identify chords instantly. Search by name or input notes on the fretboard.</p></div>
-        <div data-lang="ja"><h3>コードツール</h3><p>コードを瞬時に識別。名前検索やフレットボード入力にも対応。</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="showcase">
-  <div class="showcase-inner">
-    <div class="showcase-row fade-up">
-      <div class="showcase-img">
-        <img data-lang="ja" src="assets/ss-eq.png" alt="Parametric EQ" loading="lazy" width="320" height="693">
-        <img data-lang="en" src="assets/ss-eq-en.png" alt="Parametric EQ" loading="lazy" width="320" height="693">
-      </div>
-      <div class="showcase-text">
-        <div data-lang="en">
-          <p class="label">Pro Features</p>
-          <h2>Go further with Etude Pro</h2>
-          <p>Unlock advanced tools for serious musicians. Parametric EQ, audio effects with 40+ presets, unlimited scores, audio export, and more.</p>
-          <ul>
-            <li>5-band parametric equalizer</li>
-            <li>40+ audio effect presets</li>
-            <li>Unlimited score imports</li>
-            <li>MP3/WAV audio export</li>
-            <li>Note name overlay</li>
-            <li>Piano roll view</li>
-          </ul>
-        </div>
-        <div data-lang="ja">
-          <p class="label">Pro 機能</p>
-          <h2>Etude Pro でさらに先へ</h2>
-          <p>本格派のための高度なツール。パラメトリックEQ、40種以上のエフェクトプリセット、楽譜無制限インポートなど。</p>
-          <ul>
-            <li>5バンドパラメトリックイコライザー</li>
-            <li>40種以上のオーディオエフェクト</li>
-            <li>楽譜の無制限インポート</li>
-            <li>MP3/WAVオーディオエクスポート</li>
-            <li>音名オーバーレイ表示</li>
-            <li>ピアノロール表示</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="formats">
-  <div data-lang="en">
-    <p class="section-label">Compatibility</p>
-    <h2 class="section-title">Works with your files</h2>
-  </div>
-  <div data-lang="ja">
-    <p class="section-label">互換性</p>
-    <h2 class="section-title">あなたのファイルに対応</h2>
-  </div>
+<!-- ======= FORMATS ======= -->
+<section>
+  <p class="section-label">COMPATIBILITY</p>
+  <h2 class="section-title" data-lang="ja">あなたのファイルに、<strong>対応。</strong></h2>
+  <h2 class="section-title" data-lang="en">Works with <strong>your files.</strong></h2>
+  <p class="section-desc" data-lang="ja">主要な楽譜・音声・動画フォーマットをサポート。MuseScoreで作った.msczをそのまま開けます。</p>
+  <p class="section-desc" data-lang="en">Supports the major score, audio, and video formats. Opens MuseScore .mscz files directly.</p>
   <div class="format-chips">
-    <span class="format-chip">MusicXML</span>
-    <span class="format-chip">MSCZ</span>
+    <span class="format-chip">.mscz</span>
+    <span class="format-chip">MusicXML (.xml / .mxl)</span>
     <span class="format-chip">MIDI</span>
     <span class="format-chip">MP3</span>
     <span class="format-chip">WAV</span>
     <span class="format-chip">M4A</span>
-    <span class="format-chip">MP4</span>
-    <span class="format-chip">MOV</span>
+    <span class="format-chip">FLAC</span>
+    <span class="format-chip">OGG</span>
+    <span class="format-chip">MP4 / MOV</span>
   </div>
 </section>
 
+<!-- ======= WHY ETUDE ======= -->
+<section>
+  <p class="section-label">WHY ETUDE</p>
+  <h2 class="section-title" data-lang="ja">Etudeが、<strong>他とちがう3つの理由。</strong></h2>
+  <h2 class="section-title" data-lang="en">Three reasons <strong>Etude is different.</strong></h2>
+  <p class="section-desc" data-lang="ja">機能の数ではなく、機能のつながり方。練習中の体験を中心に置いて設計されています。</p>
+  <p class="section-desc" data-lang="en">Not just a feature count — it's how the features connect. Designed around the experience of practicing.</p>
+  <div class="why-grid">
+    <div class="why-card">
+      <p class="why-num">01</p>
+      <h3 data-lang="ja">練習に必要なツールが、<br>ひとつのアプリに集約</h3>
+      <h3 data-lang="en">Every practice tool,<br>in one app.</h3>
+      <p data-lang="ja">譜面再生、テンポ調整、ループ、書き込み、チューナー、メトロノーム、音源加工。練習中に必要なものをアプリ切り替えなしで使えます。</p>
+      <p data-lang="en">Score playback, tempo, loop, annotation, tuner, metronome, audio processing — without switching apps.</p>
+    </div>
+    <div class="why-card">
+      <p class="why-num">02</p>
+      <h3 data-lang="ja">無料の段階で、<br>練習の本質は完結する</h3>
+      <h3 data-lang="en">The core of practice<br>is free.</h3>
+      <p data-lang="ja">楽譜の再生・パート抽出・テンポ可変・A-Bループ・チューナー・メトロノームは、すべて無料で使えます。Proは応用機能の追加です。</p>
+      <p data-lang="en">Score playback, part isolation, tempo, A-B loop, tuner, metronome — all free. Pro adds advanced tools.</p>
+    </div>
+    <div class="why-card">
+      <p class="why-num">03</p>
+      <h3 data-lang="ja">譜面はあなたのデバイスに<br>だけ保存される</h3>
+      <h3 data-lang="en">Scores live<br>only on your device.</h3>
+      <p data-lang="ja">完全オフラインで動作し、サーバー通信や個人データ収集はありません。アカウント登録も不要です。</p>
+      <p data-lang="en">Fully offline. No server traffic. No data collection. No account.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======= TRUST ======= -->
+<section class="trust full">
+  <div class="trust-inner">
+    <div class="trust-badge">
+      <div class="trust-icon"><svg class="ico"><use href="#i-offline"/></svg></div>
+      <h4 data-lang="ja">完全オフライン</h4><h4 data-lang="en">Fully Offline</h4>
+      <p data-lang="ja">譜面はあなたのデバイスにだけ保存</p>
+      <p data-lang="en">Scores stay on your device</p>
+    </div>
+    <div class="trust-badge">
+      <div class="trust-icon"><svg class="ico"><use href="#i-shield"/></svg></div>
+      <h4 data-lang="ja">データ収集なし</h4><h4 data-lang="en">No Data Collection</h4>
+      <p data-lang="ja">個人データの送信・解析はなし</p>
+      <p data-lang="en">No personal data sent or analyzed</p>
+    </div>
+    <div class="trust-badge">
+      <div class="trust-icon"><svg class="ico"><use href="#i-user"/></svg></div>
+      <h4 data-lang="ja">アカウント不要</h4><h4 data-lang="en">No Account</h4>
+      <p data-lang="ja">ダウンロードして即使える</p>
+      <p data-lang="en">Download and start</p>
+    </div>
+    <div class="trust-badge">
+      <div class="trust-icon"><svg class="ico"><use href="#i-folder"/></svg></div>
+      <h4 data-lang="ja">標準規格対応</h4><h4 data-lang="en">Open Formats</h4>
+      <p data-lang="ja">MusicXML / MIDI / .mscz</p>
+      <p data-lang="en">MusicXML / MIDI / .mscz</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PRICING ======= -->
+<section>
+  <p class="section-label">PRICING</p>
+  <h2 class="section-title" data-lang="ja">無料で、<strong>練習の核となる機能を全部使える。</strong></h2>
+  <h2 class="section-title" data-lang="en">All the <strong>core practice tools, free.</strong></h2>
+  <p class="section-desc" data-lang="ja">楽譜再生・パートミキサー・テンポ変更・A-Bループ・カーソル追従・バックグラウンド再生・チューナー・メトロノームは無料です。応用機能はEtude Proで使えます。</p>
+  <p class="section-desc" data-lang="en">Score playback, part mixer, tempo, A-B loop, cursor follow, background playback, tuner, metronome — all free. Pro adds advanced features.</p>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <h3>Free</h3>
+      <p class="pricing-price">¥0</p>
+      <p class="pricing-trial" data-lang="ja">アカウント登録不要・期間制限なし</p>
+      <p class="pricing-trial" data-lang="en">No account, no time limit</p>
+      <ul class="pricing-features" data-lang="ja">
+        <li>.mscz / MusicXML / MIDI 読み込み（楽譜5個まで）</li>
+        <li>音声ファイル読み込み（5個まで）</li>
+        <li>全パート再生・パートミキサー</li>
+        <li>テンポ可変(10〜200%)</li>
+        <li>A-Bループ</li>
+        <li>カーソル追従</li>
+        <li>バックグラウンド再生</li>
+        <li>クロマティックチューナー</li>
+        <li>メトロノーム(変拍子対応)</li>
+        <li>音声ファイルのピッチ・テンポ独立変更</li>
+        <li>波形表示・ピンチズーム</li>
+      </ul>
+      <ul class="pricing-features" data-lang="en">
+        <li>.mscz / MusicXML / MIDI import (up to 5 scores)</li>
+        <li>Audio file import (up to 5 files)</li>
+        <li>Full playback + part mixer</li>
+        <li>Tempo control (10–200%)</li>
+        <li>A-B loop</li>
+        <li>Cursor follow</li>
+        <li>Background playback</li>
+        <li>Chromatic tuner</li>
+        <li>Metronome (odd meters supported)</li>
+        <li>Independent pitch / tempo for audio files</li>
+        <li>Waveform display, pinch zoom</li>
+      </ul>
+    </div>
+    <div class="pricing-card featured">
+      <h3>Etude Pro</h3>
+      <p class="pricing-price">¥600<span data-lang-i="ja">/月 または ¥4,800/年</span><span data-lang-i="en">/mo or ¥4,800/yr</span></p>
+      <p class="pricing-trial" data-lang="ja">7日間無料トライアル付き</p>
+      <p class="pricing-trial" data-lang="en">7-day free trial</p>
+      <ul class="pricing-features" data-lang="ja">
+        <li>Freeのすべての機能に加えて</li>
+        <li>譜面への書き込み(Apple Pencil対応)</li>
+        <li>録音モード + リアルタイムピッチ検出</li>
+        <li>5バンドパラメトリックEQ</li>
+        <li>40種以上のオーディオエフェクト</li>
+        <li>ピアノロール表示</li>
+        <li>音名オーバーレイ</li>
+        <li>コード自動検出</li>
+        <li>動画インポート(音声抽出)</li>
+        <li>楽譜・音声の無制限インポート</li>
+        <li>音声エクスポート(MP3 / WAV)</li>
+        <li>楽譜エクスポート(PDF / MusicXML / MIDI / MXL)</li>
+        <li>ブックマーク機能</li>
+        <li>グループ管理</li>
+      </ul>
+      <ul class="pricing-features" data-lang="en">
+        <li>Everything in Free, plus:</li>
+        <li>Score annotation (Apple Pencil supported)</li>
+        <li>Recording mode + real-time pitch detection</li>
+        <li>5-band parametric EQ</li>
+        <li>40+ audio effects</li>
+        <li>Piano roll view</li>
+        <li>Note name overlay</li>
+        <li>Chord auto-detection</li>
+        <li>Video import (audio extraction)</li>
+        <li>Unlimited score and audio imports</li>
+        <li>Audio export (MP3 / WAV)</li>
+        <li>Score export (PDF / MusicXML / MIDI / MXL)</li>
+        <li>Bookmarks</li>
+        <li>Group organization</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FAQ ======= -->
+<section>
+  <p class="section-label">FAQ</p>
+  <h2 class="section-title" data-lang="ja">よくある質問。</h2>
+  <h2 class="section-title" data-lang="en">Frequently asked.</h2>
+  <p class="section-desc"></p>
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <h4 data-lang="ja">無料でどこまで使えますか？</h4>
+      <h4 data-lang="en">How much works for free?</h4>
+      <p data-lang="ja">楽譜再生、パートミキサー、テンポ可変、A-Bループ、カーソル追従、バックグラウンド再生、クロマティックチューナー、メトロノーム、音声ファイルの読み込みとピッチ・テンポ独立変更まで、無料で使えます。ただし、無料プランでは楽譜と音声ファイルがそれぞれ5個までという上限があります。無制限のインポート、書き込み・録音・コード自動検出・エフェクト・エクスポートなどはEtude Proで利用できます。</p>
+      <p data-lang="en">Score playback, part mixer, tempo, A-B loop, cursor follow, background playback, chromatic tuner, metronome, audio file loading, and independent pitch/tempo control — all free. Free plan caps at 5 scores and 5 audio files. Unlimited imports, annotation, recording, chord detection, effects, and export require Etude Pro.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4 data-lang="ja">MuseScore公式アプリと何が違いますか？</h4>
+      <h4 data-lang="en">How is this different from the official MuseScore app?</h4>
+      <p data-lang="ja">Etudeは練習に特化した別アプリで、記譜編集機能はありません。譜面の作成や編集はデスクトップのMuseScore Studioで行うことを想定しています。その代わりA-Bループ、譜面への書き込み、バックグラウンド再生など、練習中に欲しい機能を厚く実装しています。</p>
+      <p data-lang="en">Etude is a separate, practice-focused app — it does not edit notation. Score creation and editing are expected to happen in MuseScore Studio on the desktop. In return, Etude doubles down on what you want during practice: A-B loop, score annotation, background playback, and more.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4 data-lang="ja">古い形式の.msczは開けますか？</h4>
+      <h4 data-lang="en">Does it open older .mscz files?</h4>
+      <p data-lang="ja">MuseScore 4形式の.msczを推奨しています。MuseScore 3系の旧形式の一部は読めない場合があります。開けない譜面があればサポートまでお知らせください。可能な限り対応します。</p>
+      <p data-lang="en">MuseScore 4 .mscz files are recommended. Some MuseScore 3 files may fail to load. If you find one, please let support know — we'll try to handle it.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4 data-lang="ja">移調楽器（Bb / Eb / F）に対応していますか？</h4>
+      <h4 data-lang="en">Are transposing instruments (Bb / Eb / F) supported?</h4>
+      <p data-lang="ja">はい、対応しています。デフォルトではin C表示に自動変換されますが、楽器ごとの実音表示への切り替えも可能です。</p>
+      <p data-lang="en">Yes. By default everything converts to concert pitch. You can switch back to each instrument's written pitch as needed.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4 data-lang="ja">譜面への書き込みは保存されますか？</h4>
+      <h4 data-lang="en">Are score annotations saved?</h4>
+      <p data-lang="ja">はい、自動保存されます。次回譜面を開いたときに、書き込みが残った状態で表示されます。書き込み機能はEtude Proの機能です。</p>
+      <p data-lang="en">Yes, automatically. Annotations are restored the next time you open the score. Annotation is an Etude Pro feature.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4 data-lang="ja">Proのサブスクリプションはどう解約しますか？</h4>
+      <h4 data-lang="en">How do I cancel the Pro subscription?</h4>
+      <p data-lang="ja">iOSの設定からApple ID、サブスクリプションへ進んで解約できます。7日間の無料トライアル期間中に解約すれば、課金は発生しません。</p>
+      <p data-lang="en">Open iOS Settings, tap your Apple ID, then Subscriptions. Cancel within the 7-day trial to avoid any charge.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4 data-lang="ja">Android版はありますか？</h4>
+      <h4 data-lang="en">Is there an Android version?</h4>
+      <p data-lang="ja">現在はiOS版（iPhone・iPad）のみです。Android版は将来的な検討課題ですが、現時点で公開時期は未定です。</p>
+      <p data-lang="en">Currently iOS only (iPhone / iPad). Android is being considered, but with no announced timeline.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4 data-lang="ja">譜面はどこに保存されますか？</h4>
+      <h4 data-lang="en">Where are my scores stored?</h4>
+      <p data-lang="ja">あなたのデバイス上にのみ保存されます。クラウドへの送信や、第三者によるアクセスはありません。完全オフラインで動作します。</p>
+      <p data-lang="en">Only on your device. Nothing is sent to the cloud, no third-party access. Etude runs fully offline.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======= LANGUAGES ======= -->
+<section>
+  <p class="section-label">LANGUAGES</p>
+  <h2 class="section-title" data-lang="ja">8言語対応。</h2>
+  <h2 class="section-title" data-lang="en">8 languages.</h2>
+  <p class="section-desc" data-lang="ja">アプリは以下の言語で利用できます。譜面のテキストは元のままを保持します。</p>
+  <p class="section-desc" data-lang="en">The app is available in the following languages. Score text is preserved as written.</p>
+  <div class="lang-chips">
+    <span class="lang-chip">日本語</span>
+    <span class="lang-chip">English</span>
+    <span class="lang-chip">한국어</span>
+    <span class="lang-chip">简体中文</span>
+    <span class="lang-chip">繁體中文</span>
+    <span class="lang-chip">Deutsch</span>
+    <span class="lang-chip">Español</span>
+    <span class="lang-chip">Français</span>
+  </div>
+</section>
+
+<!-- ======= CTA ======= -->
 <section class="cta-section">
-  <div data-lang="en">
-    <h2>Start practicing smarter</h2>
-    <p>Free to download. No account required.</p>
-  </div>
-  <div data-lang="ja">
-    <h2>もっとスマートに練習しよう</h2>
-    <p>無料でダウンロード。アカウント登録不要。</p>
-  </div>
-  <a href="https://apps.apple.com/app/etude-sheet-music-player/id6742598930" class="appstore-badge">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-    <div class="badge-text">
-      <span class="small" data-lang-inline="en">Download on the</span>
-      <span class="small" data-lang-inline="ja">からダウンロード</span>
+  <h2 class="cta-title" data-lang="ja">あなたの練習を、<strong>もっとラクに、もっと深く。</strong></h2>
+  <h2 class="cta-title" data-lang="en">Make your practice <strong>easier and deeper.</strong></h2>
+  <p class="cta-desc" data-lang="ja">無料でダウンロード · アカウント登録不要 · 完全オフライン動作</p>
+  <p class="cta-desc" data-lang="en">Free download · No account · Fully offline</p>
+  <a href="https://apps.apple.com/app/id6758625177" class="appstore-badge">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    <div>
+      <span class="small">Download on the</span>
       <span class="big">App Store</span>
     </div>
   </a>
 </section>
 
+<!-- ======= FOOTER ======= -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-links">
-      <a href="support.html">
-        <span data-lang-inline="en">Support</span>
-        <span data-lang-inline="ja">サポート</span>
-      </a>
-      <a href="privacy.html">
-        <span data-lang-inline="en">Privacy Policy</span>
-        <span data-lang-inline="ja">プライバシーポリシー</span>
-      </a>
-      <a href="terms.html">
-        <span data-lang-inline="en">Terms of Service</span>
-        <span data-lang-inline="ja">利用規約</span>
-      </a>
-      <a href="mailto:wall.ao.dev@gmail.com">
-        <span data-lang-inline="en">Contact</span>
-        <span data-lang-inline="ja">お問い合わせ</span>
-      </a>
+    <div class="footer-brand">
+      <div class="footer-brand-row">
+        <span class="footer-brand-icon"><img src="assets/icon.png" alt="Etude" width="36" height="36"></span>
+        <img src="assets/wordmark.png" alt="Etude" class="footer-wordmark">
+      </div>
+      <p data-lang="ja">練習のすべてを、ひとつに。<br>iOSの楽譜練習アプリ。</p>
+      <p data-lang="en">All your practice, in one app.<br>Sheet music practice app for iOS.</p>
     </div>
-    <p class="footer-copy">&copy; 2026 Etude. All rights reserved.</p>
+    <div class="footer-col">
+      <h5 data-lang-i="ja">プロダクト</h5><h5 data-lang-i="en">Product</h5>
+      <a href="#features"><span data-lang-i="ja">機能</span><span data-lang-i="en">Features</span></a>
+      <a href="#"><span data-lang-i="ja">料金</span><span data-lang-i="en">Pricing</span></a>
+      <a href="#">FAQ</a>
+    </div>
+    <div class="footer-col">
+      <h5 data-lang-i="ja">サポート</h5><h5 data-lang-i="en">Support</h5>
+      <a href="support.html"><span data-lang-i="ja">サポート</span><span data-lang-i="en">Help</span></a>
+      <a href="mailto:wall.ao.dev@gmail.com"><span data-lang-i="ja">お問い合わせ</span><span data-lang-i="en">Contact</span></a>
+    </div>
+    <div class="footer-col">
+      <h5 data-lang-i="ja">法務</h5><h5 data-lang-i="en">Legal</h5>
+      <a href="privacy.html"><span data-lang-i="ja">プライバシーポリシー</span><span data-lang-i="en">Privacy</span></a>
+      <a href="terms.html"><span data-lang-i="ja">利用規約</span><span data-lang-i="en">Terms</span></a>
+    </div>
   </div>
+  <p class="footer-bottom">&copy; 2026 Etude. All rights reserved.</p>
 </footer>
 
 <script>
-function toggleLang() {
-  document.body.classList.toggle('ja');
-  localStorage.setItem('etude-lang', document.body.classList.contains('ja') ? 'ja' : 'en');
-}
 (function() {
-  var saved = localStorage.getItem('etude-lang');
-  if (saved === 'ja' || (!saved && navigator.language.startsWith('ja'))) {
-    document.body.classList.add('ja');
+  // Initial language: URL param > localStorage > browser locale > 'ja'
+  function detectLang() {
+    var urlLang = new URLSearchParams(window.location.search).get('lang');
+    if (urlLang === 'en' || urlLang === 'ja') return urlLang;
+    var saved = localStorage.getItem('etude-lang');
+    if (saved === 'en' || saved === 'ja') return saved;
+    return navigator.language && navigator.language.startsWith('ja') ? 'ja' : 'en';
   }
-})();
-var observer = new IntersectionObserver(function(entries) {
-  entries.forEach(function(entry) {
-    if (entry.isIntersecting) { entry.target.classList.add('visible'); }
+  function applyLang(lang) {
+    if (lang === 'en') {
+      document.body.classList.add('en');
+      document.documentElement.lang = 'en';
+    } else {
+      document.body.classList.remove('en');
+      document.documentElement.lang = 'ja';
+    }
+    var url = new URL(window.location);
+    if (lang === 'en') url.searchParams.set('lang', 'en');
+    else url.searchParams.delete('lang');
+    window.history.replaceState({}, '', url);
+    localStorage.setItem('etude-lang', lang);
+  }
+  applyLang(detectLang());
+
+  document.getElementById('langToggle').addEventListener('click', function() {
+    var nextLang = document.body.classList.contains('en') ? 'ja' : 'en';
+    applyLang(nextLang);
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
+})();
 </script>
 
 </body>
